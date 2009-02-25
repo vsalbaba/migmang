@@ -1,168 +1,27 @@
-== Bakalasrka_prace
+Hrací potřeby
 
-Vyzaduje NArray - gem install narray
+Hrací deska 9×9 linií
+16 černých a 16 bílých kamenů
 
+Počet hráčů - 2
 
-== Pravidla Damy
+== Pravidla ==
 
-cl. 1
-Hra a hraci
+Cíl hry
+Zajmout všechny soupeřovy kameny.
 
-1. ceska dama je dusevni sport, ktery hraji dve osoby, ktere se nazyvaji hraci.
+Výchozí situace
+Základní postavení je na obrázku nahoře. Hru zahajuje bily.
 
-cl. 2
-Herni material
+Hra
+Hráč na tahu posune kamenem po čáře o jedno pole libovolným směrem.
+Diagonální pohyb není povolen.
+Kámen, který je obklopen jinými kameny tak, že se nemůže hnout žádným směrem, je zajat a odstraněn z desky.
+Obklíčení našeho kamene musí dokončit kámen soupeřův.
+Jestliže během přesunu svých kamenů zatarasíme některému z nich poslední cestu, tento kámen není soupeřem zajat.
+Zbývá-li hráči jen jediný kámen, zajímá soupeřovy kameny přeskokem. Přeskok může být proveden z jednoho bodu, přes kámen na sousedním bodu, na následující bod. Ten musí být volný a všechny tři body musí ležet na jedné linii.
+Přeskok soupeřova kamene není povinný.
 
-1. ceska dama se hraje na ctvercove desce rozdelene na 64 stejnych poli, pricemz se pravidelne stridaji svetla a tmava pole.
-2. ceska dama se hraje jen na 32 aktivnich tmavych polich
-3. sikme linie vytvorene tmavymi poli vytvareji 13 diagonal. Nejdelsi úhlopricka spojujici dva rohy desky a obsahujici 8 tmavych poli se nazyva hlavni diagonala.
-4. Desku je treba umistit mezi oba hrace tak, aby hlavni diagonala zacinala po leve ruce kazdeho hrace, prvni pole vlevo je u kazdeho hrace tmave.
-5. Na takto definovane desce lze rozlisit tyto rady a sloupce:
-      1. rady, t.j. vodorovne linie osmi stridave svetlych a tmavych poli
-      2. sloupce, t.j. osm stridave svetlych a tmavych poli jdoucich kolmo od okraje sachovnice, ktery je nejblize jednomu hraci, k okraji, ktery je nejblize druhemu hraci
-      3. zakladni rady, t.j. rady, ktere jsou nejblize k nekteremu z hraců
-      4. krajni sloupce, t.j. sloupce, ktere jsou na kraji desky
-6. Pole desky jsou ocislovana. Toto ocislovani nemusi byt na desce znazorneno. Sloupce jsou oznaceny z pohledu hrace hrajiciho bilymi kameny zleva doprava pismeny a,b,c,d,e,f,g,h; rady se z pohledu hrace hrajiciho bilymi kameny oznacuji postupne od nejblizsi dolni rady po nejvzdalenejsi horni radu cisly 1,2,3,4,5,6,7,8. Pole se oznacuje spojenim oznaceni rady a sloupce, na jejichz průseciku se nachazi. Takto jsou
-      1. ctyri tmava pole zakladnich rad oznacena a1, c1, e1, g1, b8, d8, f8, h8
-      2. ctyri tmava pole krajnich sloupců oznacena vlevo a1, a3, a5, a7 a vpravo h2, h4,h6,h8
-      3. tmava krajni pole hlavni diagonaly v rozich desky jsou oznacena a1 h8
-7. ceska dama se hraje s dvanacti bilymi kameny (nebo kameny svetlych odstinů) a dvanacti cernymi kameny (nebo kameny tmavych odstinů)
-8. Pred zahajenim partie je dvanact cernych kamenů umisteno na polich a7, b6, b8, c7, d6, d8, e7, f6, f8, g7, h6, h8 a dvanact bilych kamenů na polich a1, a3, b2, c1, c3, d2, e1, e3, f2, g1, g3, h2. Pole na 4. a 5. rade desky jsou volna.
-
-cl. 3
-Tahy figur
-
-1. Figury se rozlisuji na kameny a damy
- 2. Kameny a damy maji různy způsoby pohybu a brani. Pohyb figury z jednoho pole na druhe se nazyva tah
- 3. Prvni tah provadi hrac, ktery ma bile kameny. Oba hraci pak provadi tahy stridave, vzdy jen jeden tah svymi vlastnimi figurami.
- 4. Kamen se pohybuje vzdy jen dopredu po diagonale z jednoho pole na druhe volne pole dalsi rady.
- 5. Damou se stane kamen, ktery dokoncil tah na nekterem z tmavych poli protilehle zakladni rady desky.
- 6. Dama se oznacuje korunovaci, t.j. tim, ze se na kamen polozi jiny kamen stejne barvy. Tuto korunovaci provadi souper, nesplni-li vsak tuto svoji povinnost, korunovaci provede hrac, hrajici damou.
- 7. Kamen, premeneny na damu, si podrzi toto postaveni v dalsim průbehu hry.
- 8. Dama můze uplatnit zvlastni způsoby pohybu a brani az pote, co po jeji premene z kamene zahraje souper jeden tah.
- 9. Dama se presunuje dozadu a dopredu na libovolna volna pole diagonaly, na ktere se nachazi.
-10. Premisteni figury se povazuje za dokoncene v okamziku, jakmile hrac pustil figuru z ruky.
-11. Jestlize se hrac, ktery je na tahu, dotkne jednoho nebo nekolika kamenů, musi provest svůj tah prvnim dotknutym kamenem, je-li tento tah mozny podle pravidel.
-12. Jestlize hrac figuru, kterou provadi tah, jeste nepustil, můze ji umistit na jine pole, pokud je to mozne podle pravidel.
-13. Upozorni-li predem sveho soupere vyrokem "j'adoube", můze hrac, ktery je na tahu, opravit postaveni jednoho nebo nekolika figur na jejich polich.
-14. Skutecnost, ze se hrac, ktery neni na tahu, dotyka svych nebo souperovych poli, nema pro tohoto hrace zadne důsledky, povazuje se vsak za nesportovni chovani.
-
-cl. 4
-Brani
-
-1. Brani souperovy figury je povinne, provadi kamenem jen dopredu, damou lze brat i dozadu. Úplne brani se povazuje za jeden tah. Brani vlastnich figur je zakazane.
- 2. Brani kamenem: Jestlize se kamen nachazi na diagonale v sousedstvi souperovy figury, za kterou je volne pole, je povinen ji preskocit, obsadit toto volne pole a odstranit preskocenou souperovu figuru z desky.
- 3. Brani damou: Jestlize se dama nachazi na stejne diagonale se souperovou figurou, za kterou je jedno nebo vice volnych poli, je povinna tutu figuru preskocit, zaujmout libovolne volne pole na diagonale za ni a preskocenou figuru odstranit z desky.
- 4. Brani musi byt jasne znazorneno a jednotlive operace musi byt provedeny v poradi uvedenem v odst. 2 a 3. Nedostatecne znazornene brani musi byt na zadost soupere znazorneno znovu. Brani se povazuje za dokoncene az okamzikem odstraneni souperovych figur.
- 5. Vicenasobne brani kamenem: Jestlize se kamen po provedenem preskoceni souperovy figury opet nachazi na diagonale v sousedstvi souperovy figury, za kterou je volne pole, je povinen opet skocit i tuto druhou, pripadne treti a dalsi figuru a obsadit volne pole, ktere se nachazi za posledni preskocenou figurou a pote odstranit z desky vsechny preskocene souperovy figury v poradi, v jakem byly preskoceny, nebo v poradi opacnem.
- 6. Vicenasobne brani damou: Jestlize se dama po provedenem preskoceni souperovy figury opet nachazi na stejne diagonale se souperovou figurou, za kterou je jedno nebo vice volnych poli nebo takovou diagonalu krizi, je povinna opet skocit i tuto druhou, pripadne treti a dalsi figuru a obsadit libovolne volne pole, ktere se nachazi za posledni preskocenou figurou a pote odstranit z desky vsechny preskocene souperovy figury v poradi, v jakem byly preskoceny, nebo v poradi opacnem.
- 7. Behem brani je zakazano preskakovat vlastni figury.
- 8. Behem brani je dovoleno presouvat figuru nekolikrat pres stejne pole, je vsak zakazano preskakovat vicekrat stejnou souperovu figuru.
- 9. Vicenasobne brani musi byt jasne znazorneno tak, ze hrac umisťuje postupne svoji skakajici figuru na jednotliva volna pole za preskocenymi kameny soupere a nakonec umisti tuto figuru na konecne pole skoku. Nedostatecne znazornene vicenasobne brani musi byt na zadost soupere znazorneno znovu.
-10. Vicenasobne preskoceni je ukonceno v okamziku, kdy hrac pusti preskakujici figuru.
-11. Preskocene souperovy figury mohou byt odstraneny z desky az po provedenem skoku. a to v poradi, v jakem byly preskoceny, nebo opacnem. Neusporadane odstraňovani preskocenych figur musi byt na zadost soupere opraveno.
-12. Odstraneni preskocenych figur se povazuje za ukoncene v okamziku, kdy hrac odstrani posledni preskocenou figuru nebo v průbehu odstraňovani souperovych figur ukonci tah.
-13. Jestlize ma hrac vice moznosti brani, můze si vybrat libovolnou z nich bez ohledu na pocet preskocenych figur. Vicenasobne brani je vsak treba dokoncit tak, aby po preskoceni souperovych figur pred jejich odstranenim z desky nebyla jiz pro preskakujici figuru zadna dalsi moznost brani.
-14. Je-li vsak moznost brani jak damou tak i kamenem, ma dama vzdy prednost.
-
-cl. 5
-Pozice a tahy proti pravidlům
-
-1. Jestlize se v průbehu partie zjisti, ze deska byla umistena v rozporu s cl. 2 odst.4, je takova partie neplatna a je treba ji sehrat od sameho zacatku znovu.
-2. Kameny musi byt umisteny na desku v souladu s cl. 2 odst.8 pred zahajenim partie. Pri kazde odchylce z tohoto pravidla, zjistene v průbehu partie, se postupuje podle zasad vedenych v odst. 4 nize.
-3. Kazda souperova figura, nachazejici se mimo aktivni tmava pole desky, je mimo hru a můze byt vracena do hry jen postupem podle odst.4. nize.
-4. Jestlize se hrac dopustil nektereho z nize uvedenych poruseni pravidel, pouze souper ma pravo rozhodnout, zda toto poruseni ma byt opraveno, nebo zda bude ponechano v platnosti.
-      1. hrani dvakrat za sebou
-      2. nespravne premisteni figury
-      3. provedeni tahu jinou vlastni figurou, nez ktere se predtim dotknul
-      4. zpetvzeti tahu
-      5. hrani souperovou figurou
-      6. opomenuti moznosti brani
-      7. bezdůvodne odstraneni souperovych nebo vlastnich figur
-      8. brani kamenem, je-li moznost brani damou
-      9. zastaveni se v provadeni skoku (viz. cl. 4 odst.10)
-     10. nespravne odstraneni figury behem neukonceneho brani
-     11. odstraneni nizsiho poctu souperovych figur, nez jaky byl preskocen
-     12. odstraneni souperovych figur, ktere nebyly v průbehu brani preskoceny
-     13. zastaveni se v odstraňovani souperovych figur v průbehu brani
-     14. odstraňovani vlastnich figur v průbehu brani
-5. Jestlize se v pripade nehody zmeni postaveni figur na desce, nelze tuto skutecnost, v pripade, ze je okamzite zjistena, povazovat za důvod postupu podle predchoziho odstavce.
-6. Jestlize se nektery hrac odmita podrobit pravidlům hry, jeho souper ma pravo domahat se jejich dodrzeni.
-7. Kazdy tah zahrany souperem hrace, ktery porusil pravidla nekterym ze způsobů uvedenych v odst.4 pism. a)-n), nebo ktery se odmita podrobit pravidlům hry, se povazuje za potvrzeni vznikleho stavu a neni jiz zadna moznost napravy takoveho poruseni.
-8. castecna naprava poruseni nebo odmitnuti pravidel se nepripousti.
-
-cl. 6
-Nerozhodna partie
-
-1. Partie je nerozhodna, kdyz se stejna pozice vyskytne potreti, pricemz na tahu je vzdy stejny hrac.
-2. Jestlize behem 15ti po sobe jdoucich tahů nedoslo k tahu kamenem nebo k zadnemu brani, je partie nerozhodna.
-3. Jestlize nezbyvaji na desce vice nez tri damy proti jedne dame, ktera se nenachazi na hlavni diagonale (cl.2 odst.6 pism.c), partie je nerozhodna, kdyz oba hraci odehraji kazdy jeste patnact tahů.
-4. Jestlize nezbyvaji na desce vice nez dve damy nebo jedna dama s jednim kamenem nebo jedna dama proti jedne dame, nebo jestlize nezbyvaji na desce vice nez tri damy proti jedne dame, ktera se nachazi na hlavni diagonale (cl.2 odst.6 pism.c), partie je nerozhodna, kdyz oba hraci odehraji kazdy jeste pet tahů
-
-cl. 7
-Vysledek partie
-
-1. Jsou dve formy vysledku
-			1. vyhra jednoho z hraců a v důsledku toho prohra druheho
-			2. nerozhodna partie
-2. Vyhra je dosazena hracem, jehoz souper
-      1. vzda partii, nebo
-      2. je na tahu, ale jehoz figury jsou zablokovany a nemůze s nimi provest tah podle pravidel, nebo
-      3. nema figury, nebo
-      4. se odmitne podrobit pravidlům hry.
-3. Nerozhodne pro oba hrace skonci partie, jestlize:
-      1. se dohodnou, nebo
-      2. se pouzije ustanoveni cl. 6, nebo
-      3. zadny z nich partii nevyhraje
-
-cl. 8
-Notace
-
-1. Aktivni tmava pole desky jsou v souladu s cl. 2 odst. 6 oznacena a1, a3, a5, a7, b2, b4, b6, b8, c1, c3, c5, c7, d2, d4, d6, d8, e1, e3, e5, e7, f2, f4, f6, f8, g1, g3, g5, g7, h2, h4, h6, h8. Je mozne zaznamenavat premisťovani bilych i cernych figur a s pomoci tohoto zaznamu znovu prehrat celou partii.
-2. Premisťovani figur můze byt vyjadreno timto způsobem:
-      1. oznaceni pole, z nehoz zacina nasledovane oznacenim pole, na kterem konci
-      2. tato oznaceni mohou byt oddelena pomlckou, kdyz jde o proste premisteni
-      3. tato dve oznaceni mohou byt oddelena krizkem, pokud doslo pri premisteni k brani
-
-cl. 9
-Smluvene znaky
-
-1. V zajmu presnejsiho vyjadrovani v zapise partii je mozne pouzivat techto smluvenych znaků:
-      1. premisteni figur: -
-      2. brani: x
-      3. dobry nebo silny tah: !
-      4. velmi dobry nebo silny tah: !!
-      5. spatny nebo slaby tah: ?
-      6. velice spatny nebo slaby tah: ??
-      7. tah zdanlive slaby, ktery se ukaze byt silnym: ?!
-      8. tah zdanlive silny, ktery se ukaze byt slabym: !?
-      9. tah z donuceni, kdyz kazdy jiny tah vede ke ztrate *
-     10. vyhra partie: +
-     11. rovna hra: =
-     12. posledni tah v partii hrany v urcite fazi k oznaceni poctu ziskanych kamenů: +1, +2 atd.
-     13. obracene pro oznaceni poctu ztracenych kamenů: -1, -2 atd.
-     14. tah nebo brani dle vyberu majici stejne důsledky: a.l. (ad libitum).
-
-cl. 10
-casova kontrola
-
-1. Můze byt dohodnuto, pokud jde o urcitou partii, ze kazdy hrac je povinen odehrat urcity pocet tahů behem urcene doby
-2. V takovem pripade jsou povinni hraci:
-      1. pouzit hracich hodin
-      2. zaznamenavat, kazdy tah za tahem, kompletni průbeh partie
-3. Můze byt dohodnuto, pokud jde o urcitou partii, ze kazdy hrac bude disponovat urcitym casem, aby dohral tuto partii az do konce
-4. V tomto pripade je povinen pouzivat hracich hodin aniz bude pozadovan zapis
-5. Popis a pravidla uzivani hodin jsou upraveny souteznim radem.
-
-cl. 11
-Variace partie
-
-1. Mohou byt různe variace ve způsobu hry v damu:
-      1. Normalni partie na desce mezi hraci sedicimi naproti sobe.
-      2. Normalni partie na desce mezi hracem simultanne posazenem proti urcitemu poctu hraců
-      3. Partie hrana korespondencne mezi dvema hraci , kteri si stridave vymeňuji hrane tahy
-      4. partie mezi hracem jenz hraje aniz to vidi , pouziva nebo nepouziva zaznam a hracem, jenz ma pred sebou desku
-      5. Partie mezi hracem , ktery hraje aniz vidi, pouziva nebo nepouziva zaznam a mezi simultanne vice hraci, kteri kazdy ma k dispozici desku
-      6. partie hrana slepym hracem mezi slepymi hraci, kteri maji k dispozici desku s figurami v reliefu.
-      7. normalni partie na desce mezi dvema hraci nestejne silnymi, silnejsi zacina s hendikepem jedne nebo vice figur
-2. Pro tyto různe variace s vyjimkou te, ktera je uvedena pod bodem a) je na miste se obratit na doplnek radovych dispozic.
+Konec hry
+Zvítězí hráč, který zajme všechny soupeřovy kameny.
+Hráči se dohodnou na remíze v případě, že žádný z hráčů nemá dostatek kamenů k tomu, aby zvitezil.
