@@ -11,8 +11,9 @@ class Board < NMatrix
 			end
 		end
 	end
-	
+
+
 	def clear!
-		self.fill! 0
+		fill! 0
 	end
 end

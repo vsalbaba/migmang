@@ -23,12 +23,5 @@ describe Board do
 		end
 	
 	end
-	
-	describe ".clear!" do
-		it "should clear array" do
-			@it.should_receive(:fill!).with(0)
-			@it.clear!
-		end
-	end
 end
 

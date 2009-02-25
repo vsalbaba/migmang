@@ -1,6 +1,7 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), "board")
 require File.join(File.expand_path(File.dirname(__FILE__)), "../enhancements/fixnum_enhancements")
-require File.join(File.expand_path(File.dirname(__FILE__)), "../enhancements/object_enhancements")
+require File.join(File.expand_path(File.dirname(__FILE__)), "../enhancements/dama_board_helper")
+require 'observer'
 =begin rdoc
 Matice hraci desky. Policka jsou polozky v matici, jejich hodnota urcuje
 jaka je na nich figurka.
@@ -11,31 +12,24 @@ jaka je na nich figurka.
 * 4 - cerna dama
 =end
 class DamaBoard
+  WHITEMAN = 1
+  BLACKMAN = 2
+  WHITEKING = 3
+  BLACKKING = 4
+	include Observable
+  attr_accessor :board, :on_move
 
-	WHITEMAN = 1
-	BLACKMAN = 2
-	WHITEKING = 3
-	BLACKKING = 4
-
-	attr_accessor :board, :on_move
-	attr_reader :available_moves
-	
-	def initialize
+  def initialize
+		extend DamaBoardHelper
 		@board = Board.byte(8,8)
-	end
-
-	def new_game!
-		@board.clear!
-		populate!
 		@on_move = :white
-		@available_moves = moves_for(:white)
-	end
+  end
 
 =begin rdoc
 vlozi na  desku figury v zakladnim postaveni
-Nevynuluje desku pokud na ni je rozehrana hra.
 =end
-	def populate!
+  def populate!
+		@board.clear!
 		black_men = %w(a7 b6 b8 c7 d6 d8 e7 f6 f8 g7 h6 h8)
 		white_men = %w(a1 a3 b2 c1 c3 d2 e1 e3 f2 g1 g3 h2)
 
@@ -47,40 +41,40 @@ Nevynuluje desku pokud na ni je rozehrana hra.
 			self[man] = WHITEMAN
 		end
 		self
-	end
+  end
 
 =begin rdoc
 selector policka na desce. Je mozne selektovat napr. 0,0 (jako v poli poli) nebo stringem, napr. "a1" (jako v normalni notace)
 =end
-	def [](key1, key2 = nil)
+  def [](key1, key2 = nil)
 		if key1.kind_of?(String)
 			normal = from_noted key1
 			@board[normal.first, normal.last]
 		elsif [key1, key2].all? {|key| key.kind_of?(Integer) }
 			@board[key1, key2]
 		end
-	end
+  end
 
-	def []=(key1, key2_or_value, value = nil)
+  def []=(key1, key2_or_value, value = nil)
 		if key1.kind_of?(String)
 			normal = from_noted key1
 			@board[normal.first, normal.last] = key2_or_value
 		elsif [key1, key2_or_value].all? {|key| key.kind_of?(Integer) }
 			@board[key1, key2_or_value] = value
 		end
-	end
+  end
 
 =begin rdoc
 vygeneruje vsechny mozne tahy pro jednoho hrace
 =end
-	def moves_for(player_color)
+  def moves_for(player_color)
 		moves = generate(:capture, :king, player_color)
 		return moves unless moves.empty?
 
 		moves = generate(:capture, :man, player_color)
 		return moves unless moves.empty?
 		return generate(:move, :king, player_color) + generate(:move, :man, player_color)
-	end
+  end
 
 
 =begin rdoc
@@ -90,18 +84,26 @@ Pri odbrani tahu je treba uvadet jakou figuru odebirame, abysme mohli pak provad
 vraci novou desku.
 Destruktivni verzi je apply_move!
 =end
-	def apply_move(move)
+  def apply_move(move)
 		copy = DamaBoard.new
 		copy.on_move = @on_move
 		copy.board = @board.clone
-		copy.apply_move! move
+
+		for part in move
+			case part[0]
+			when :remove
+				copy[part[1]] = 0
+			when :place
+				copy[part[1]] = part[2]
+			end
+		end
 		copy
-	end
+  end
 
 =begin rdoc
 aplikuje destruktivne tah na desku. Pro podrobnosti se podivejte na apply_move
 =end
-	def apply_move!(move)
+  def apply_move!(move)
 		for part in move
 			case part[0]
 			when :remove
@@ -110,11 +112,13 @@ aplikuje destruktivne tah na desku. Pro podrobnosti se podivejte na apply_move
 				self[part[1]] = part[2]
 			end
 		end
+		changed
+		notify_observers @board.dup, move
 		self
-	end
+  end
 
-private
-	def generate(what, figures, player_color)
+  private
+  def generate(what, figures, player_color)
 		moves = []
 		if figures == :man
 			figure = (player_color == :white) ? WHITEMAN : BLACKMAN
@@ -128,21 +132,21 @@ private
 		end
 		return moves
 
-	end
+  end
 
-	def captures_for_king_helper(x,y,direction, &block)
+  def captures_for_king_helper(x,y,direction, &block)
 		i = 1
 		while true do
-		  computed_x = x+i*direction[0]
-		  computed_y = y+i*direction[1]
+			computed_x = x+i*direction[0]
+			computed_y = y+i*direction[1]
 			break unless [computed_x, computed_y].all?{|value| value.between?(0,7)}
 			computed_noted_position = to_noted(computed_x, computed_y)
 			yield computed_noted_position
 			i +=1
 		end
-	end
+  end
 
-	def captures_for_king(x,y)
+  def captures_for_king(x,y)
 		figure = self[x,y]
 		noted_position = to_noted(x,y)
 		directions = [[-1,1],[1,1], [-1,-1], [1, -1]]
@@ -164,8 +168,8 @@ private
 			captures_for_king_helper(new_x, new_y, direction) do |computed_noted_position|
 				break if self[computed_noted_position].full?
 				moves.push [[:remove, noted_position, figure],
-										[:remove, enemy_to_jump_over, self[enemy_to_jump_over]],
-										[:place, computed_noted_position, figure]]
+					[:remove, enemy_to_jump_over, self[enemy_to_jump_over]],
+					[:place, computed_noted_position, figure]]
 			end #ted by v moves mely byt jednoduche preskoky.
 		end
 
@@ -192,8 +196,8 @@ private
 					break if self[computed_noted_position].full?
 					unless move.any?{|part| part == [:remove, enemy_to_jump_over, self[enemy_to_jump_over]]}
 						move2 = [[:remove, new_starting_position, figure],
-										 [:remove, enemy_to_jump_over, self[enemy_to_jump_over]],
-										 [:place, computed_noted_position, figure]]
+							[:remove, enemy_to_jump_over, self[enemy_to_jump_over]],
+							[:place, computed_noted_position, figure]]
 						moves.push move + move2
 						should_return_this_move = false
 					end
@@ -215,10 +219,10 @@ private
 			end
 		end
 		return result2
-	end
+  end
 
 
-	def captures_for_man(x,y)
+  def captures_for_man(x,y)
 		figure = self[x,y]
 		directions = figure.white? ? [[-1,1],[1,1]] : [[-1,-1], [1, -1]]
 		result = []
@@ -254,10 +258,10 @@ private
 			end
 		end #until
 		return result
-	end
+  end
 
 
-	def moves_for_king(x,y)
+  def moves_for_king(x,y)
 		raise "No man or king at #{to_noted(x,y)}" if self[x,y].empty?
 		directions = [[-1,1],[1,1], [-1,-1], [1, -1]]
 
@@ -280,9 +284,9 @@ private
 			end
 		end
 		return moves
-	end
+  end
 
-	def moves_for_man(x,y)
+  def moves_for_man(x,y)
 		raise "No man or king at #{to_noted(x,y)}" if self[x,y].empty?
 		directions = self[x,y].white? ? [[-1,1],[1,1]] : [[-1,-1], [1, -1]]
 
@@ -300,24 +304,24 @@ private
 			end
 		end
 		return moves
-	end
+  end
 
-	def make_change_to_king_to(move)
+  def make_change_to_king_to(move)
 		last_part = move.last
 		case last_part[1][1]
-			when "8"[0]
-				if last_part[2].white?
-					result = move.dup
-					result.last[2] = WHITEKING
-					return result
-				end
-			when "1"[0]
-				if last_part[2].black?
-					result = move.dup
-					result.last[2] = BLACKKING
-					return result
-				end
+		when "8"[0]
+			if last_part[2].white?
+				result = move.dup
+				result.last[2] = WHITEKING
+				return result
+			end
+		when "1"[0]
+			if last_part[2].black?
+				result = move.dup
+				result.last[2] = BLACKKING
+				return result
+			end
 		end
 		return move
-	end
+  end
 end

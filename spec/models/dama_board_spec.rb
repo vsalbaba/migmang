@@ -1,6 +1,12 @@
 require File.dirname(__FILE__) + '/../../lib/models/dama_board'
 require File.dirname(__FILE__) + '/../spec_helper.rb'
 
+	WHITEMAN = 1
+	BLACKMAN = 2
+	WHITEKING = 3
+	BLACKKING = 4
+	EMPTY = 0
+
 describe DamaBoard do
 
 	before do
@@ -52,14 +58,6 @@ describe DamaBoard do
 				h1 h3 h4 h5 h7).each do |e|
 					@dama_board[e].should be_empty
 				end
-		end
-	end
-	
-	describe ".new_game!" do
-		it "should do clear! and populate!" do
-			@dama_board.board.should_receive(:clear!)
-			@dama_board.should_receive(:populate!)
-			@dama_board.new_game!
 		end
 	end
 	
