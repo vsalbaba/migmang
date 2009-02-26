@@ -9,21 +9,25 @@ require File.dirname(__FILE__) + '/../enhancements/metaid'
 require File.dirname(__FILE__) + '/../enhancements/move_enhancements'
 
 class Historian
-	attr_reader :history, :index
+  include MoveEnhancements
+	
+  attr_reader :history, :index
+	
   def initialize(game)
-		extend MoveEnhancements
 		@game = game
 		@history = Array.new
 		@index = -1
 		wake_up!
   end
 
-	def update(board, move)
-		unless (@index == (@history.length - 1))
-			@history = @history[0..@index]
-		end
-		@history << move
-		@index += 1
+	def update(message, board, move)
+	  if message == :move
+  		unless (@index == (@history.length - 1))
+  			@history = @history[0..@index]
+  		end
+  		@history << move
+  		@index += 1
+  	end
 	end
 
 	def self.observe(game)

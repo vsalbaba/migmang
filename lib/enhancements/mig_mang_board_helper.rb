@@ -1,7 +1,4 @@
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
-
-module DamaBoardHelper
+module MigMangBoardHelper
 	def from_noted(string)
 		[string[0]-97, string[1].chr.to_i-1]
   end
