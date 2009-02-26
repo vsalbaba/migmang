@@ -1,11 +1,11 @@
 require File.dirname(__FILE__) + '/../../lib/models/historian.rb'
-require File.dirname(__FILE__) + '/../../lib/models/dama_board.rb'
+require File.dirname(__FILE__) + '/../../lib/models/mig_mang_board.rb'
 require File.dirname(__FILE__) + '/../spec_helper.rb'
 
 describe Historian do
 
 	before(:each) do
-		@game = DamaBoard.new
+		@game = MigMangBoard.new
 		@it = Historian.new(@game)
 	end
 	describe "observing Historian", :shared => true do
