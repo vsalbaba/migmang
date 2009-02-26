@@ -1,8 +1,3 @@
-# 
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
- 
-
 require 'rake'
 
 desc "spusti test a zapise ho do nazev_testu.html"
