@@ -17,6 +17,6 @@ class Array
   end
   
   def neighbours(min, max)
-    [ self.up, self.down, self.left, self.right ].only_those_on_board(0, 9)
+    [ self.up, self.down, self.left, self.right ].only_those_on_board(min, max)
   end
 end

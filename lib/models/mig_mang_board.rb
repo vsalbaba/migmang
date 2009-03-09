@@ -14,6 +14,8 @@ class MigMangBoard
   EMPTY    = 0
   WHITEMAN = 1
   BLACKMAN = 2
+  MIN_SIZE = 0
+  MAX_SIZE = 8
 
   include Observable
   include Rules
@@ -97,5 +99,10 @@ Konstruktivni verzi je apply_move
     changed
     notify_observers :move, @board.dup, move
     self
+  end
+
+  def empty_neighbours_for(x,y)
+    [x,y].neighbours(MIN_SIZE, MAX_SIZE).delete_if{|position|
+      @board[position[0], position[1]].full?}
   end
 end
