@@ -50,6 +50,8 @@ selector policka na desce. Je mozne selektovat napr. 0,0 (jako v poli poli) nebo
     if key1.kind_of?(String)
       normal = from_noted key1
       @board[normal.first, normal.last]
+    elsif key1.kind_of?(Array)
+      @board[key1.first, key1.last]
     elsif [key1, key2].all? {|key| key.kind_of?(Integer) }
       @board[key1, key2]
     end
