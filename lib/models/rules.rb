@@ -33,14 +33,21 @@ vygeneruje vsechny mozne tahy pro jednoho hrace
 
 private
   def generate_for(x,y)
-    moves = [x,y].neighbours.delete_if {|coord| board[coord[0], coord[1]].full?}
-    #TODO generovani tahu
-    #
-    #
+    moves = empty_neighbours_for(x,y)
+    moves.map{|move|
+      this_move = [[:remove, to_noted(x,y), self[x, y]], [:place, to_noted(move), self[x,y]]]
+      # je potreba obejit vsechny sousedy policka na ktere jsme tahli a zjistit,
+      # jestli jejich jediny volny soused je policko na ktere jsme tahli.
+      move.neighbours(0,9).each do |neighbour|
+        if self[neighbour].enemy_to?(self[x, y]) and empty_neighbours_for(neighbour.first, neighbour.last) == [x,y]
+          this_move << [:remove, to_noted(move), self[move]]
+        end
+      end
+    }
   end
 
   def can_move?(x,y)
-    ![x,y].neighbours.all? do |coord|
+    ![x,y].neighbours(0,9).all? do |coord|
       board[coord[0], coord[1]].full?
     end
   end
