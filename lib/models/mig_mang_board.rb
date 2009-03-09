@@ -25,7 +25,7 @@ class MigMangBoard
 
   def initialize
     @board = Board.new(9,9)
-    @on_move = :white
+    @on_move = WHITEMAN
   end
 
 =begin rdoc
@@ -96,6 +96,7 @@ Konstruktivni verzi je apply_move
         self[part[1]] = part[2]
       end
     end
+    @on_move == WHITE ? @on_move = BLACK : @on_move = WHITE
     changed
     notify_observers :move, @board.dup, move
     self
