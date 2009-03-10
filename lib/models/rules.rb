@@ -20,7 +20,7 @@ vygeneruje vsechny mozne tahy pro jednoho hrace
   end
 
   def ended?
-    !!winner or draw
+    !!winner or @draw
   end
 
   def winner
