@@ -41,6 +41,7 @@ vlozi na  desku figury v zakladnim postaveni
     %w(b9 c9 d9 e9 f9 g9 h9 i9 i8 i7 i6 i5 i4 i3 i2 i1).each do |man|
       self[man] = BLACKMAN
     end
+
     @on_move = WHITEMAN
     self
   end
@@ -77,7 +78,6 @@ Destruktivni verzi je +apply_move!+
     copy = MigMangBoard.new
     copy.on_move = @on_move
     copy.board = @board.dup
-
     copy.apply_move!(move)
   end
 
@@ -96,11 +96,13 @@ Konstruktivni verzi je apply_move
         self[part[1]] = part[2]
       end
     end
+
     if @on_move.white?
       @on_move = BLACKMAN
     else 
       @on_move = WHITEMAN
     end
+
     changed
     notify_observers :move, @board.dup, move
     self
