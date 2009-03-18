@@ -1,9 +1,22 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), "abstract_player")
+require File.join(File.expand_path(File.dirname(__FILE__)), "../../enhancements/move_enhancements")
 WHITE = 1
 BLACK = 2
 class MinimaxPlayer < AbstractPlayer
-  def pick_move(moves)
-    moves[rand(moves.size)]
+  attr_reader :games, :depth
+  include MoveEnhancements
+  def initialize
+    @depth = 1
+  end
+  
+  def pick_move(game,moves)
+    games = moves.map do |move|
+      game.apply_move(move)
+    end
+    scores = games.map do |game|
+      alphabeta(game, @depth*2)
+    end
+    return moves.at(scores.index(scores.max))
   end
 =begin rdoc
 pseudocode:
@@ -16,32 +29,75 @@ pseudocode:
             let α := max(α, -minimax(child, depth-1))
         return α
 =end
-  def minimax(board, depth)
-    if board.ended? or depth == 0
-      return score(board)
+  def minimax(node, depth)
+    if node.ended? or depth == 0
+      return score(node)
     else
-      nodes = board.moves_for(board.on_move).map{|move|
-        board.apply_move(move)
+      nodes = node.moves_for(node.on_move).map{|move|
+        node.apply_move(move)
       }
       alpha = -100
       for child in nodes
-        alpha = [alpha, -miminax(child, depth - 1)].max
+        alpha = [alpha, -minimax(child, depth-1)].max
       end
       return alpha
     end
   end
-  
-  def score(board)
-    if board.ended?
-      board.on_move == board.winner ? return 100 : return -100
-    else
-      figures = 0
-      board.board.each_with_keys do |x, y, key|
-        if key == board.on_move
-          figures += 1
-        end
-      end
-      return figures
+=begin
+int AlfaBeta(Pozice p, int h, int alfa, int beta) {
+  if (h <= 0 || KoncovaPozice(p)) /* pokud je to poslední nebo koncová pozice, */
+    return OhodnotitPozici(p); /* tak ji ohodnoť */
+  tahy = GenerujTahy(p); /* generuj tahy pro aktuální pozici */
+  for i = 1 to size(tahy) do { /* cyklus pres všechny tahy */
+    ProvedTah(p); /* zahraj tah */
+/* propočtem do hloubky zjisti ohodnocení z hlediska soupeře */
+    int hodnota = -AlfaBeta(p, h – 1, -beta, -alfa);
+    ProvedTahZpet(tah[i], p); /* zahraj tah zpět */
+    if (hodnota >= beta)
+      return beta; /* při tomto návratu dojde k úspoře */
+    if (hodnota > alfa) /* pokud je vrácená hodnota lepší, než dosud nalezená, tak si ji ulož */
+      alfa = hodnota;
+  }
+  return alfa;
+}
+=end
+  def alphabeta(node, depth, alpha = -100, beta = 100)
+    if depth <= 0 or node.ended?
+      return score(node)
     end
+    moves = node.moves_for(node.on_move)
+    for move in moves
+      node.apply_move!(move)
+      value = -alphabeta(node, depth-1, -beta, -alpha)
+      node.apply_move!(reverse_move(move))
+      if (value >= beta)
+        return beta
+      end
+      alpha = value if (value > alpha)
+    end
+    return alpha
+  end
+  
+#vraci cislo -100..100, cim vyssi, tim byl tah vedouci k teto desce lepsi
+  def score(game)
+    if game.on_move.white?
+      evaluate_for = BLACK
+    else
+      evaluate_for = WHITE
+    end
+    
+    if game.winner == evaluate_for
+      return 100
+    elsif game.winner == game.on_move
+      return -100
+    end
+    #ohodnoceni desky
+    enemy_figures = 0
+    game.board.each_with_keys do |x,y,key|
+      if key == game.on_move
+        enemy_figures += 1
+      end
+    end
+    return -enemy_figures
   end
 end
