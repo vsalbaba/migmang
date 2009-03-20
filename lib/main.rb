@@ -1,6 +1,9 @@
-# 
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
- 
+require 'Qt4'
+require File.join(File.expand_path(File.dirname(__FILE__)), "views/dama_board")
 
-puts "Hello World"
+app = Qt::Application.new(ARGV)
+
+game_board = View::Board.new
+
+game_board.show
+app.exec

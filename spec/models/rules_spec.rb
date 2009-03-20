@@ -6,7 +6,7 @@ include Rules
 
 describe Rules do
   before(:each) do
-    @it = MigMangBoard.new
+    @mock = mock('board')
   end
   
   describe "#moves_for" do

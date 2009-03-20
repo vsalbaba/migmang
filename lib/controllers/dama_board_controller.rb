@@ -3,7 +3,7 @@ require File.join(File.expand_path(File.dirname(__FILE__)), "../controllers/dama
 class DamaBoardController
   attr_accessor :dama_board
   def new_game!
-    @dama_board = DamaBoard.new
+    @dama_board = Board.new
     @dama_board.new_game!
   end
 end
