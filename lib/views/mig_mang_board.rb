@@ -50,7 +50,23 @@ module View
     end
  
     def mousePressEvent(event)
-      
+      case event.button
+      when Qt::LeftButton:
+        x = event.x / SQUARE_SIDE
+        y = 8 - (event.y / SQUARE_SIDE)      
+        @to_be_highlighted = [x, y]
+      end
+    end
+    
+    def mouseReleaseEvent(event)
+      case event.button
+      when Qt::LeftButton:
+        x = event.x / SQUARE_SIDE
+        y = 8 - (event.y / SQUARE_SIDE)
+        highlighted = [x, y]
+        @highlighted = highlighted if highlighted == @to_be_highlighted
+        @to_be_highlighted = nil
+      end
     end
    end
   
