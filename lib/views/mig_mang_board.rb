@@ -1,17 +1,21 @@
 require 'Qt4'
 module View
   class Board < Qt::Widget
+    attr_accessor :board
     SQUARES = 81
     SQUARE_SIDE = 60
 
     def initialize(parent = nil)
+      super
       @theme = Theme.new
       unless @theme.load_squares(File.join(File.expand_path(File.dirname(__FILE__)), "themes/test.png"))
-        Kernel.raise 'Image not in the right format or missing'
+        Kernel.raise 'Board image not in the right format or missing'
       end
-      super
+      unless @theme.load_pieces(File.join(File.expand_path(File.dirname(__FILE__)), "themes/pieces.png"))
+        Kernel.raise 'Pieces image not in the right format or missing'
+      end
     end
-
+    
     def paintEvent(event)
       p = Qt::Painter.new(self)
       SQUARES.times do |square|
@@ -38,10 +42,17 @@ module View
           else @theme.center
           end
         end
-        p.drawPixmap(x*60, 8*60 - y*60, pixmap)
+        p.drawPixmap(x*SQUARE_SIDE, 8*SQUARE_SIDE - y*SQUARE_SIDE, pixmap)
+        unless board[x,y].empty?
+          p.drawPixmap(x*SQUARE_SIDE, 8*SQUARE_SIDE - y*SQUARE_SIDE, @theme.piece[board[x,y] -1])
+        end
       end
     end
-  end
+ 
+    def mousePressEvent(event)
+      
+    end
+   end
   
   
   
@@ -49,7 +60,7 @@ module View
   stara se o obrazky na desce
 =end
   class Theme
-  attr_reader :left_bottom, :left_top, :right_bottom, :right_top, :left, :right, :top, :bottom, :center, :black_piece, :white_piece
+  attr_reader :left_bottom, :left_top, :right_bottom, :right_top, :left, :right, :top, :bottom, :center, :black_piece, :white_piece, :piece
 
 =begin rdoc
 Pokusi se nacist obrazek desky ze souboru. V souboru by melo byt 9 ctvercovych obrazku nad sebou
@@ -74,11 +85,16 @@ Pokusi se nacist obrazek desky ze souboru. V souboru by melo byt 9 ctvercovych o
       return true
     end
     
-    def load_pieces
+    def load_pieces(path)
       big = Qt::Pixmap.new
       #pokud soubor neexistuje, vrat false
       return false unless big.load(path)
       small_size = big.height / 2
+      return false unless small_size == big.width
+      @white_piece = big.copy(0, 0, small_size, small_size)
+      @black_piece = big.copy(0, small_size, small_size, small_size)
+      @piece       = [white_piece, @black_piece]
+      return true
     end
   end
 end

@@ -47,7 +47,7 @@ vlozi na  desku figury v zakladnim postaveni
   end
 
 =begin rdoc
-selector policka na desce. Je mozne selektovat napr. 0,0 (jako v poli poli) nebo stringem, napr. "a1" (jako v normalni notace)
+selector policka na desce. Je mozne selektovat napr. 0,0 (jako v poli poli) nebo stringem, napr. "a1" (jako v normalni notaci)
 =end
   def [](key1, key2 = nil)
     if key1.kind_of?(String)
