@@ -43,18 +43,23 @@ module View
           end
         end
         p.drawPixmap(x*SQUARE_SIDE, 8*SQUARE_SIDE - y*SQUARE_SIDE, pixmap)
-        unless board[x,y].empty?
+        unless @board[x,y].empty?
           p.drawPixmap(x*SQUARE_SIDE, 8*SQUARE_SIDE - y*SQUARE_SIDE, @theme.piece[board[x,y] -1])
         end
       end
     end
  
-    def mousePressEvent(event)
+    def mouseDoubleClickEvent(event)
       case event.button
       when Qt::LeftButton:
         x = event.x / SQUARE_SIDE
-        y = 8 - (event.y / SQUARE_SIDE)      
-        @to_be_highlighted = [x, y]
+        y = 8 - (event.y / SQUARE_SIDE)
+        case 
+        when @board[x,y].white? and @board.on_move.white?:
+        when @board[x,y].black? and @board.on_move.black?:
+        end
+          
+        @highlight = [x, y]
       end
     end
     
@@ -68,7 +73,19 @@ module View
         @to_be_highlighted = nil
       end
     end
-   end
+private
+    def moves_begining_at(position, moves)
+      moves.find_all do |move|
+        move.first[1] == @board.to_noted(position)
+      end
+    end
+    
+    def highlight_move(move)
+      @place_highlight = move.find_all{|move| move.first == :place}.map{|move| @board.from_noted(move[1])}
+      @remove_highlight = move.find_all{|move| move.first == :remove}.map{|move| @board.from_noted(move[1])}
+    end
+  end
+end
   
   
   
@@ -76,7 +93,10 @@ module View
   stara se o obrazky na desce
 =end
   class Theme
-  attr_reader :left_bottom, :left_top, :right_bottom, :right_top, :left, :right, :top, :bottom, :center, :black_piece, :white_piece, :piece
+  attr_reader :left_bottom, :left_top, :right_bottom, :right_top, 
+              :left, :right, :top, :bottom, :center, 
+              :black_piece, :white_piece, :piece,
+              :highlight, :place_highlight, :remove_highlight
 
 =begin rdoc
 Pokusi se nacist obrazek desky ze souboru. V souboru by melo byt 9 ctvercovych obrazku nad sebou
@@ -111,6 +131,13 @@ Pokusi se nacist obrazek desky ze souboru. V souboru by melo byt 9 ctvercovych o
       @black_piece = big.copy(0, small_size, small_size, small_size)
       @piece       = [white_piece, @black_piece]
       return true
+    end
+    
+    def load_highlights(highlight, place_highlight, remove_highlight)
+      @highlight        = Qt::Pixmap.new.load(highlight)
+      @place_highlight  = Qt::Pixmap.new.load(place_highlight)
+      @remove_highlight = Qt::Pixmap.new.load(remove_highlight)
+      return false unless @highlight and @place_highlight and @remove_highlight
     end
   end
 end
