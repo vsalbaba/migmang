@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'Qt4'
 require File.join(File.expand_path(File.dirname(__FILE__)), "views/mig_mang_board")
 require File.join(File.expand_path(File.dirname(__FILE__)), "models/mig_mang_board")

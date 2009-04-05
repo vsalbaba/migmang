@@ -88,7 +88,6 @@ private
       @destination_highlight = @place_highlight #DANGER - zalozeno na pravidlech migmangu
     end
   end
-end
 
 
 
