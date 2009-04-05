@@ -15,12 +15,12 @@ module View
         Kernel.raise 'Pieces image not in the right format or missing'
       end
     end
-    
+
     def paintEvent(event)
       p = Qt::Painter.new(self)
       SQUARES.times do |square|
         x = square % 9
-        y = square / 9 
+        y = square / 9
         puts x, y
         pixmap = case x
         when 0:
@@ -48,21 +48,22 @@ module View
         end
       end
     end
- 
+
     def mouseDoubleClickEvent(event)
       case event.button
       when Qt::LeftButton:
         x = event.x / SQUARE_SIDE
         y = 8 - (event.y / SQUARE_SIDE)
-        case 
-        when @board[x,y].white? and @board.on_move.white?:
-        when @board[x,y].black? and @board.on_move.black?:
+        
+        @place_highlight = @remove_highlight =[]
+        
+        moves_begining_at([x,y], @moves).each do |move|
+          highlight_move(move)
         end
-          
-        @highlight = [x, y]
+        paint_event(nil)
       end
     end
-    
+
     def mouseReleaseEvent(event)
       case event.button
       when Qt::LeftButton:
@@ -73,34 +74,36 @@ module View
         @to_be_highlighted = nil
       end
     end
+
 private
     def moves_begining_at(position, moves)
       moves.find_all do |move|
         move.first[1] == @board.to_noted(position)
       end
     end
-    
+
     def highlight_move(move)
-      @place_highlight = move.find_all{|move| move.first == :place}.map{|move| @board.from_noted(move[1])}
-      @remove_highlight = move.find_all{|move| move.first == :remove}.map{|move| @board.from_noted(move[1])}
+      @place_highlight << move.find_all{|move| move.first == :place}.map{|move| @board.from_noted(move[1])}
+      @remove_highlight << move.find_all{|move| move.first == :remove}.map{|move| @board.from_noted(move[1])}
+      @destination_highlight = @place_highlight #DANGER - zalozeno na pravidlech migmangu
     end
   end
 end
-  
-  
-  
+
+
+
 =begin rdoc
   stara se o obrazky na desce
 =end
   class Theme
-  attr_reader :left_bottom, :left_top, :right_bottom, :right_top, 
-              :left, :right, :top, :bottom, :center, 
+  attr_reader :left_bottom, :left_top, :right_bottom, :right_top,
+              :left, :right, :top, :bottom, :center,
               :black_piece, :white_piece, :piece,
               :highlight, :place_highlight, :remove_highlight
 
 =begin rdoc
 Pokusi se nacist obrazek desky ze souboru. V souboru by melo byt 9 ctvercovych obrazku nad sebou
-=end    
+=end
     def load_squares(path)
       big = Qt::Pixmap.new
       #pokud soubor neexistuje, vrat false
@@ -120,7 +123,7 @@ Pokusi se nacist obrazek desky ze souboru. V souboru by melo byt 9 ctvercovych o
       @center       = big.copy(0, 8 * small_size, small_size, small_size)
       return true
     end
-    
+
     def load_pieces(path)
       big = Qt::Pixmap.new
       #pokud soubor neexistuje, vrat false
@@ -132,7 +135,7 @@ Pokusi se nacist obrazek desky ze souboru. V souboru by melo byt 9 ctvercovych o
       @piece       = [white_piece, @black_piece]
       return true
     end
-    
+
     def load_highlights(highlight, place_highlight, remove_highlight)
       @highlight        = Qt::Pixmap.new.load(highlight)
       @place_highlight  = Qt::Pixmap.new.load(place_highlight)
