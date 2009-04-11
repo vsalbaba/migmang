@@ -5,19 +5,25 @@ BLACK = 2
 class MinimaxPlayer < AbstractPlayer
   attr_reader :games, :depth
   include MoveEnhancements
+
   def initialize
     @depth = 1
   end
   
   def pick_move(game,moves)
-    games = moves.map do |move|
+    @games = moves.map do |move|
       game.apply_move(move)
     end
-    scores = games.map do |game|
+    scores = @games.map do |game|
       alphabeta(game, @depth*2)
     end
-    return moves.at(scores.index(scores.max))
+    result = moves.at(scores.index(scores.max))
+    changed
+    notify_observers self, result
+    return result
   end
+
+private
 =begin rdoc
 pseudocode:
  function minimax(node, depth)

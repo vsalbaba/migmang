@@ -14,14 +14,20 @@ module View
       unless @theme.load_pieces(File.join(File.expand_path(File.dirname(__FILE__)), "themes/pieces.png"))
         Kernel.raise 'Pieces image not in the right format or missing'
       end
+      unless @theme.load_highlights(File.join(File.expand_path(File.dirname(__FILE__)), "themes/composed-highlight.png"))
+        Kernel.raise 'Highlights image not in the right format or missing'
+      end
+      @place_highlight = []
+      @remove_highlight = []
+      @destination_highlight = []
     end
 
     def paintEvent(event)
+      puts "painting"
       p = Qt::Painter.new(self)
       SQUARES.times do |square|
         x = square % 9
         y = square / 9
-        puts x, y
         pixmap = case x
         when 0:
           case y
@@ -46,6 +52,12 @@ module View
         unless @board[x,y].empty?
           p.drawPixmap(x*SQUARE_SIDE, 8*SQUARE_SIDE - y*SQUARE_SIDE, @theme.piece[board[x,y] -1])
         end
+        if @destination_highlight.include?([x,y]) then
+          p.drawPixmap(x*SQUARE_SIDE, 8*SQUARE_SIDE - y*SQUARE_SIDE, @theme.place_highlight)
+        end
+        if @remove_highlight.include?([x,y]) then
+          p.drawPixmap(x*SQUARE_SIDE, 8*SQUARE_SIDE - y*SQUARE_SIDE, @theme.remove_highlight)
+        end
       end
     end
 
@@ -55,25 +67,27 @@ module View
         x = event.x / SQUARE_SIDE
         y = 8 - (event.y / SQUARE_SIDE)
         
-        @place_highlight = @remove_highlight =[]
+        @place_highlight = @remove_highlight = @destination_highlight = []
+        
+        @moves = @board.moves_for(@board.on_move)
         
         moves_begining_at([x,y], @moves).each do |move|
           highlight_move(move)
         end
-        paint_event(nil)
+        update
       end
     end
 
-    def mouseReleaseEvent(event)
-      case event.button
-      when Qt::LeftButton:
-        x = event.x / SQUARE_SIDE
-        y = 8 - (event.y / SQUARE_SIDE)
-        highlighted = [x, y]
-        @highlighted = highlighted if highlighted == @to_be_highlighted
-        @to_be_highlighted = nil
-      end
-    end
+    # def mouseReleaseEvent(event)
+    #   case event.button
+    #   when Qt::LeftButton:
+    #     x = event.x / SQUARE_SIDE
+    #     y = 8 - (event.y / SQUARE_SIDE)
+    #     highlighted = [x, y]
+    #     @highlighted = highlighted if highlighted == @to_be_highlighted
+    #     @to_be_highlighted = nil
+    #   end
+    # end
 
 private
     def moves_begining_at(position, moves)
@@ -83,12 +97,11 @@ private
     end
 
     def highlight_move(move)
-      @place_highlight << move.find_all{|move| move.first == :place}.map{|move| @board.from_noted(move[1])}
-      @remove_highlight << move.find_all{|move| move.first == :remove}.map{|move| @board.from_noted(move[1])}
+      @place_highlight += move.find_all{|sub_move| sub_move.first == :place}.map{|sub_move| @board.from_noted(sub_move[1])}
+      @remove_highlight += move[1..-1].find_all{|sub_move| sub_move.first == :remove}.map{|sub_move| @board.from_noted(sub_move[1])}
       @destination_highlight = @place_highlight #DANGER - zalozeno na pravidlech migmangu
     end
   end
-
 
 
 =begin rdoc
@@ -135,11 +148,16 @@ Pokusi se nacist obrazek desky ze souboru. V souboru by melo byt 9 ctvercovych o
       return true
     end
 
-    def load_highlights(highlight, place_highlight, remove_highlight)
-      @highlight        = Qt::Pixmap.new.load(highlight)
-      @place_highlight  = Qt::Pixmap.new.load(place_highlight)
-      @remove_highlight = Qt::Pixmap.new.load(remove_highlight)
-      return false unless @highlight and @place_highlight and @remove_highlight
+    def load_highlights(path)
+      big = Qt::Pixmap.new
+      return false unless big.load(path)
+      small_size = big.height / 3
+      return false unless small_size == big.width
+
+      @highlight        = big.copy(0, 0 * small_size, small_size, small_size)
+      @remove_highlight  = big.copy(0, 1 * small_size, small_size, small_size)
+      @place_highlight = big.copy(0, 2 * small_size, small_size, small_size)
+      true
     end
   end
 end
