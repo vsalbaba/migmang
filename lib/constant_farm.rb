@@ -1,0 +1,7 @@
+EMPTY    = 0
+WHITEMAN = 1
+BLACKMAN = 2
+MIN_SIZE = 0
+MAX_SIZE = 8
+WHITE    = 1
+BLACK    = 2

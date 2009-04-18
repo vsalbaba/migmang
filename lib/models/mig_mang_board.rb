@@ -1,6 +1,3 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), "board")
-require File.join(File.expand_path(File.dirname(__FILE__)), "rules")
-require File.join(File.expand_path(File.dirname(__FILE__)), "../enhancements/fixnum_enhancements")
 require File.join(File.expand_path(File.dirname(__FILE__)), "../enhancements/mig_mang_board_helper")
 require 'observer'
 =begin rdoc
@@ -11,12 +8,6 @@ jaka je na nich figurka.
 * 2 - cerna figura
 =end
 class MigMangBoard
-  EMPTY    = 0
-  WHITEMAN = 1
-  BLACKMAN = 2
-  MIN_SIZE = 0
-  MAX_SIZE = 8
-
   include Observable
   include Rules
   include MigMangBoardHelper
@@ -89,11 +80,13 @@ Konstruktivni verzi je apply_move
 =end
   def apply_move!(move)
     for part in move
-      case part[0]
+      what_to_do = part[0]
+      where_to_apply = part[1]
+      case what_to_do
       when :remove
-        self[part[1]] = 0
+        self[where_to_apply] = 0
       when :place
-        self[part[1]] = part[2]
+        self[where_to_apply] = part[2]
       end
     end
 
@@ -108,8 +101,8 @@ Konstruktivni verzi je apply_move
     self
   end
 
-  def empty_neighbours_for(x,y)
-    [x,y].neighbours(MIN_SIZE, MAX_SIZE).delete_if{|position|
+  def empty_neighbours_for(board_x,board_y)
+    [board_x,board_y].neighbours(MIN_SIZE, MAX_SIZE).delete_if{|position|
       @board[position[0], position[1]].full?}
   end
 end
