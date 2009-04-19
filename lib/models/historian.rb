@@ -20,8 +20,8 @@ class Historian
 		wake_up!
   end
 
-	def update(message, board, move)
-	  if message == :move
+	def update(who, move)
+	  if @board == who
   		unless (@index == (@history.length - 1))
   			@history = @history[0..@index]
   		end

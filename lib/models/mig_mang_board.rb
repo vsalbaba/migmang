@@ -16,7 +16,7 @@ class MigMangBoard
 
   def initialize
     @board = Board.new(9,9)
-    @on_move = WHITEMAN
+    @on_move = WHITE
   end
 
 =begin rdoc
@@ -26,14 +26,14 @@ vlozi na  desku figury v zakladnim postaveni
     @board.clear!
 
     %w(a1 a2 a3 a4 a5 a6 a7 a8 a9 b1 c1 d1 e1 f1 g1 h1).each do |man|
-      self[man] = WHITEMAN
+      self[man] = WHITE
     end
 
     %w(b9 c9 d9 e9 f9 g9 h9 i9 i8 i7 i6 i5 i4 i3 i2 i1).each do |man|
-      self[man] = BLACKMAN
+      self[man] = BLACK
     end
 
-    @on_move = WHITEMAN
+    @on_move = WHITE
     self
   end
 
@@ -91,13 +91,13 @@ Konstruktivni verzi je apply_move
     end
 
     if @on_move.white?
-      @on_move = BLACKMAN
+      @on_move = BLACK
     else 
-      @on_move = WHITEMAN
+      @on_move = WHITE
     end
 
     changed
-    notify_observers :move, @board.dup, move
+    notify_observers self, move
     self
   end
 
