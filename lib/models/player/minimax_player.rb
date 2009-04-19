@@ -8,13 +8,14 @@ class MinimaxPlayer < AbstractPlayer
   end
   
   def pick_move(game,moves)
+    puts "AI"
     @games = moves.map do |move|
       game.apply_move(move)
     end
     scores = @games.map do |game|
       alphabeta(game, @depth*2)
     end
-    result = moves.at(scores.index(scores.max))
+    result = scores.index(scores.max)
     changed
     notify_observers self, result
     return result

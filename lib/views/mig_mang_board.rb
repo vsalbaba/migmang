@@ -1,26 +1,16 @@
 module View
   class Board < Qt::Widget
     include Observable
-    attr_accessor :board
-    SQUARES_PER_SIDE = (MAX_SIZE+1)
-    SQUARES = SQUARES_PER_SIDE*SQUARES_PER_SIDE
-    SQUARE_SIDE = 60
-    FULL_SIZE = MAX_SIZE*SQUARE_SIDE
+    include MigMangBoardHelper
     FILE_PATH = File.dirname(__FILE__)
-    DESK_PATH = "/themes/simple.png"
-    PIECES_PATH = "/themes/pieces.png"
-    HIGHLIGHT_PATH = "/themes/composed-highlight.png"
+    
+    attr_accessor :board, :white_gui, :black_gui
 
     def initialize(parent = nil)
       super
       @theme = Theme.new
-      @theme.load_squares(FILE_PATH + DESK_PATH)
-      @theme.load_pieces(FILE_PATH + PIECES_PATH)
-      @theme.load_highlights(FILE_PATH + HIGHLIGHT_PATH)
-
-      @place_highlight = []
-      @remove_highlight = []
-      @destination_highlight = []
+      load_graphic
+      dehighlight
     end
 
     def paintEvent(event)
@@ -30,6 +20,7 @@ module View
         actual_x, actual_y = get_actual_position(board_x, board_y)
         paint_game_things_at([board_x, board_y], [actual_x, actual_y], painter)
       end
+      painter.end
     end
 
     def mouseDoubleClickEvent(event)
@@ -40,9 +31,13 @@ module View
 
         case @destination_highlight.include? [tile_x, tile_y]
         when true:
-          move = select_move(@board.to_noted(@origin_highlight), @board.to_noted(tile_x, tile_y))
-          changed
-          notify_observers(self, move)
+          move = select_move(to_noted(@origin_highlight), to_noted(tile_x, tile_y))
+          case @board.on_move
+          when WHITE:
+            white_gui.update(self, move) if white_gui
+          when BLACK:
+            black_gui.update(self, move) if black_gui
+          end
           dehighlight
         when false:
           highlight_moves_from(tile_x, tile_y)
@@ -52,6 +47,12 @@ module View
     end
 
 private
+    def load_graphic
+      @theme.load_squares(FILE_PATH + DESK_PATH)
+      @theme.load_pieces(FILE_PATH + PIECES_PATH)
+      @theme.load_highlights(FILE_PATH + HIGHLIGHT_PATH)
+    end
+
     def paint_board_at(tile_coord, actual_coord, painter)
       pixmap = select_board_picture_for(tile_coord)
       painter.drawPixmap(actual_coord.first, actual_coord.last, pixmap)
@@ -62,14 +63,6 @@ private
       paint_pieces_at(tile_coord, actual_coord, painter)
       paint_destination_highlight_at(tile_coord, actual_coord, painter)
       paint_remove_highlight_at(tile_coord, actual_coord, painter)
-    end
-
-    def get_tile_coords(square_number)
-      [square_number % SQUARES_PER_SIDE, square_number / SQUARES_PER_SIDE]
-    end
-
-    def get_actual_position(tile_x, tile_y)
-      [tile_x*SQUARE_SIDE, FULL_SIZE - tile_y*SQUARE_SIDE]
     end
 
     def paint_remove_highlight_at(tile_coord, actual_coord, painter)
@@ -134,7 +127,7 @@ private
 
     def moves_begining_at(position, moves)
       moves.find_all do |move|
-        move.first[1] == @board.to_noted(position)
+        move.first[1] == to_noted(position)
       end
     end
 

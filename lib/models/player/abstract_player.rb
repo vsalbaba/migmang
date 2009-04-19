@@ -7,7 +7,7 @@ class AbstractPlayer
     @color = color
   end
 
-  def pick_move(moves)
-    raise "not implemented"
+  def pick_move(game, moves)
+    puts "hello"
   end
 end

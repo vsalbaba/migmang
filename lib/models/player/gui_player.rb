@@ -1,4 +1,4 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), "abstract_player")
+
 
 class GuiPlayer < AbstractPlayer
   attr_accessor :picked_move
@@ -8,10 +8,11 @@ class GuiPlayer < AbstractPlayer
     @board = board
     @board.add_observer(self)
   end
-  
-  def pick_move(moves)
+
+  def pick_move(game, moves)
+    puts "GUI"
   end
-  
+
   def update(who, move)
     if (who == @board) and (who.board.on_move == @color)
       move_picked move
