@@ -1,7 +1,3 @@
-require File.join(File.expand_path(File.dirname(__FILE__)), "abstract_player")
-require File.join(File.expand_path(File.dirname(__FILE__)), "../../enhancements/move_enhancements")
-WHITE = 1
-BLACK = 2
 class MinimaxPlayer < AbstractPlayer
   attr_reader :games, :depth
   include MoveEnhancements
