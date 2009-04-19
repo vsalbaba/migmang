@@ -2,7 +2,7 @@ class Manager
   attr_accessor :players, :board, :historian
   def initialize
     initialize_board
-    @players =  [nil, GuiPlayer.new(@board), GuiPlayer.new(@board)]
+    @players =  [nil, GuiPlayer.new(@board), GuiPlayer.new(@board)] #protoze WHITE je 1 = eliminuje se prepocitavani indexu do pole
     observe_players
   end
 
@@ -13,11 +13,11 @@ class Manager
   end
 
   def observe_players
-    @players.each do |player|
+    @players.tail.each do |player|
       player.add_observer(self)
     end
   end
-  
+
   def update(player, move)
     if @board.on_move == @players.index(player) then
       @board.apply_move! move
