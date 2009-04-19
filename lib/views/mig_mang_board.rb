@@ -1,5 +1,6 @@
 module View
   class Board < Qt::Widget
+    include Observable
     attr_accessor :board
     SQUARES_PER_SIDE = (MAX_SIZE+1)
     SQUARES = SQUARES_PER_SIDE*SQUARES_PER_SIDE
@@ -35,12 +36,13 @@ module View
       case event.button
       when Qt::LeftButton:
         tile_x = event.x / SQUARE_SIDE
-        tile_y = 8 - (event.y / SQUARE_SIDE)
+        tile_y = MAX_SIZE - (event.y / SQUARE_SIDE)
 
         case @destination_highlight.include? [tile_x, tile_y]
         when true:
           move = select_move(@board.to_noted(@origin_highlight), @board.to_noted(tile_x, tile_y))
-          @board.apply_move!(move)
+          changed
+          notify_observers(self, move)
           dehighlight
         when false:
           highlight_moves_from(tile_x, tile_y)
@@ -119,7 +121,7 @@ private
     end
 
     def select_move(from, to)
-      move = @moves.find{|move| (move.first[1] == from) and (move[1][1] == to)}
+      @moves.index{|move| (move.first[1] == from) and (move[1][1] == to)}
     end
 
     def highlight_moves_from(tile_x, tile_y)

@@ -5,8 +5,6 @@ Tahy ktere takto odchytne si uchovava v poli a je je schopen stornovat.
 Sledovani desky je mozno zastavit metodou sedate!, ale za integritu dat pak Historian neni zodpovedny.
 =end
 require "yaml"
-require File.dirname(__FILE__) + '/../enhancements/metaid'
-require File.dirname(__FILE__) + '/../enhancements/move_enhancements'
 
 class Historian
   include MoveEnhancements

@@ -1,5 +1,4 @@
 require File.join(File.expand_path(File.dirname(__FILE__)), "../enhancements/mig_mang_board_helper")
-require 'observer'
 =begin rdoc
 Matice hraci desky. Policka jsou polozky v matici, jejich hodnota urcuje
 jaka je na nich figurka.

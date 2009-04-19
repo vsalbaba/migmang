@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'Qt4'
+require 'observer'
 
 this_file_path = File.dirname(__FILE__)
 require File.join(File.expand_path(this_file_path), "constant_farm")
