@@ -47,6 +47,7 @@ pseudocode:
       return alpha
     end
   end
+
 =begin
 int AlfaBeta(Pozice p, int h, int alfa, int beta) {
   if (h <= 0 || KoncovaPozice(p)) /* pokud je to poslední nebo koncová pozice, */
