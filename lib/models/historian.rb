@@ -19,13 +19,17 @@ class Historian
   end
 
 	def update(who, move)
-	  if @board == who
+	  puts "historian is updated!"
+	  if @game == who
+	    puts "@game == who"
   		unless (@index == (@history.length - 1))
   			@history = @history[0..@index]
   		end
   		@history << move
   		@index += 1
   	end
+  	p @history
+  	return @history
 	end
 
 	def self.observe(game)
@@ -63,7 +67,6 @@ class Historian
 	def redo!
 		if @index.next == @history.length
 			raise "No moves to redo!"
-			return
 		end
 		@index += 1
 		without_history do
