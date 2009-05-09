@@ -1,6 +1,6 @@
 class Manager < Qt::Object
   attr_accessor :board, :historian, :game_board
-  slots 'new_game()', 'undo()', 'redo()', 'load()', 'save()'
+  slots 'new_game()', 'undo()', 'redo()', 'load_game(const QString&)', 'save_game(const QString&)'
   
   def initialize()
     super
@@ -55,13 +55,16 @@ class Manager < Qt::Object
     @game_board.update
   end
   
-  def load
+  def load_game(filename)
+    puts "yay, " + filename
+    @historian.load!(filename)
+    @actual_game_filename = filename
   end
   
-  def save
-      fd = Qt::FileDialog.new()
-      puts fd.methods.sort
-      fn = fd.getOpenFileName(self, 'blah', nil, self)
+  def save_game(filename)
+    puts "yay, " + filename
+    @historian.save!(filename)
+    @actual_game_filename = filename
   end
 
 private

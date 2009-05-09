@@ -19,7 +19,6 @@ class Historian
   end
 
 	def update(who, move)
-	  puts "historian is updated!"
 	  if @game == who
 	    puts "@game == who"
   		unless (@index == (@history.length - 1))
@@ -28,7 +27,6 @@ class Historian
   		@history << move
   		@index += 1
   	end
-  	p @history
   	return @history
 	end
 
@@ -47,21 +45,24 @@ class Historian
 	end
 
 	def load!(filepath)
-		loaded = Yaml.load_file( filepath)
+		loaded = YAML.load_file(filepath)
 		@history = loaded[:history]
-		@index = loaded[:index]
-		@game.new_game
+		@game.populate!
+		@index = 0
+		until @index == loaded[:index] do
+		  redo!
+	  end
 	end
 
 	def undo!
 		if @index == -1
 			raise "No moves to undo!"
-			return
 		end
 		without_history do
 			@game.apply_move! reverse_move(@history[@index])
 		end
 		@index -= 1
+		@history[@index + 1]
 	end
 
 	def redo!
@@ -72,6 +73,7 @@ class Historian
 		without_history do
 			@game.apply_move! @history[@index]
 		end
+		@history[@index]
 	end
 
 	def wake_up!

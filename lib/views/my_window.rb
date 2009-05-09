@@ -1,6 +1,7 @@
 module View
   class MyWindow < Qt::MainWindow
-    signals 'new_game()', 'load()', 'save()', 'undo()', 'redo()'
+    signals 'new_game()', 'load_game(const QString&)', 'save_game(const QString&)', 'undo()', 'redo()'
+    slots 'save()', 'load()'
     attr_reader :game_board
     def initialize
       super
@@ -10,17 +11,29 @@ module View
       create_actions
       create_menus
     end
-
+    
+    def save
+      if filename = Qt::FileDialog.getSaveFileName(self) then
+        emit save_game(filename)
+      end
+    end
+    
+    def load
+      if filename = Qt::FileDialog.getOpenFileName(self) then
+        emit load_game(filename)
+      end
+    end
+    
 private
     def create_actions
       @new_action = Qt::Action.new("New", self)
       Qt::Object.connect(@new_action, SIGNAL('triggered()'), self, SIGNAL('new_game()'))
       
       @load_action = Qt::Action.new("Load", self)
-      Qt::Object.connect(@load_action, SIGNAL('triggered()'), self, SIGNAL('load()'))
+      Qt::Object.connect(@load_action, SIGNAL('triggered()'), self, SLOT('load()'))
       
       @save_action = Qt::Action.new("Save", self)
-      Qt::Object.connect(@save_action, SIGNAL('triggered()'), self, SIGNAL('save()'))
+      Qt::Object.connect(@save_action, SIGNAL('triggered()'), self, SLOT('save()'))
       
       @quit_action = Qt::Action.new("Quit", self)
       Qt::Object.connect(@quit_action, SIGNAL('triggered()'), self, SIGNAL('quit()'))
