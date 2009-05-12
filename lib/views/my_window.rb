@@ -1,7 +1,8 @@
 module View
   class MyWindow < Qt::MainWindow
-    signals 'new_game()', 'load_game(const QString&)', 'save_game(const QString&)', 'undo()', 'redo()'
-    slots 'save()', 'load()', 'white_computer_1()', 'white_human()' 'white_computer_2()', 'black_computer_1()', 'black_human()' 'black_computer_2()'
+    signals 'new_game()', 'load_game(const QString&)', 'save_game(const QString&)', 'undo()', 'redo()', 'change_player(int, int)'
+    
+    slots 'save()', 'load()', 'white_computer_1()', 'white_human()', 'white_computer_2()', 'black_computer_1()', 'black_human()', 'black_computer_2()'
     attr_reader :game_board
     def initialize
       super
@@ -25,28 +26,27 @@ module View
     end
 
     def white_human
+      emit change_player(WHITE, nil)
     end
 
     def white_computer_1
+      emit change_player(WHITE, 1)
     end
 
     def white_computer_2
-
+      emit change_player(WHITE, 2)
     end
-
-    def white_human
-    end
-
 
     def black_human
-
+      emit change_player(BLACK, nil)
     end
 
     def black_computer_1
+      emit change_player(BLACK, 1)
     end
 
     def black_computer_2
-
+      emit change_player(BLACK, 2)
     end
 private
     def create_actions
@@ -71,20 +71,20 @@ private
       @white_human_action = Qt::Action.new("Human", self)
       Qt::Object.connect(@white_human_action, SIGNAL('triggered()'), self, SLOT('white_human()'))
 
-      @white_computer_action_1 = Qt::Action.new("Computer - easy", self)
-      Qt::Object.connect(@white_computer_action_1, SIGNAL('triggered()'), self, SLOT('white_computer_1()'))
+      @white_computer_1_action = Qt::Action.new("Computer - easy", self)
+      Qt::Object.connect(@white_computer_1_action, SIGNAL('triggered()'), self, SLOT('white_computer_1()'))
 
-      @white_computer_action_2 = Qt::Action.new("Computer - hard", self)
-      Qt::Object.connect(@white_computer_action_2, SIGNAL('triggered()'), self, SLOT('white_computer_2()'))
+      @white_computer_2_action = Qt::Action.new("Computer - hard", self)
+      Qt::Object.connect(@white_computer_2_action, SIGNAL('triggered()'), self, SLOT('white_computer_2()'))
 
       @black_human_action = Qt::Action.new("Human", self)
       Qt::Object.connect(@black_human_action, SIGNAL('triggered()'), self, SLOT('black_human()'))
 
-      @black_computer_action_1 = Qt::Action.new("Computer - easy", self)
-      Qt::Object.connect(@black_computer_action_1, SIGNAL('triggered()'), self, SLOT('black_computer_1()'))
+      @black_computer_1_action = Qt::Action.new("Computer - easy", self)
+      Qt::Object.connect(@black_computer_1_action, SIGNAL('triggered()'), self, SLOT('black_computer_1()'))
 
-      @black_computer_action_2 = Qt::Action.new("Computer - hard", self)
-      Qt::Object.connect(@black_computer_action_2, SIGNAL('triggered()'), self, SLOT('black_computer_2()'))
+      @black_computer_2_action = Qt::Action.new("Computer - hard", self)
+      Qt::Object.connect(@black_computer_2_action, SIGNAL('triggered()'), self, SLOT('black_computer_2()'))
     end
 
     def create_menus
@@ -116,12 +116,12 @@ private
       @players_menu = menuBar.addMenu("Players")
         @white_player_menu = @players_menu.addMenu("White")
           @white_player_menu.addAction(@white_human_action)
-          @white_player_menu.addAction(@white_computer_action_1)
-          @white_player_menu.addAction(@white_computer_action_2)
+          @white_player_menu.addAction(@white_computer_1_action)
+          @white_player_menu.addAction(@white_computer_2_action)
         @black_player_menu = @players_menu.addMenu("Black")
           @black_player_menu.addAction(@black_human_action)
-          @black_player_menu.addAction(@black_computer_action_1)
-          @black_player_menu.addAction(@black_computer_action_2)
+          @black_player_menu.addAction(@black_computer_1_action)
+          @black_player_menu.addAction(@black_computer_2_action)
     end
   end
 end

@@ -1,8 +1,8 @@
 class Manager < Qt::Object
   attr_accessor :board, :historian, :game_board
-  slots 'new_game()', 'undo()', 'redo()', 'load_game(const QString&)', 'save_game(const QString&)'
+  slots 'new_game()', 'undo()', 'redo()', 'load_game(const QString&)', 'save_game(const QString&)', 'change_player(int, int)'
   
-  def initialize()
+  def initialize
     super
     initialize_board
     @inner_players = []
@@ -21,12 +21,27 @@ class Manager < Qt::Object
   end
   
   def players=(players_in)
+    self.white_player = players_in[0]
+    self.black_player = players_in[1]
+    p players
+    players
+  end
+  
+  def white_player=(player_in)
+    p "youuuuu"
+    set_player!(WHITE, player_in)
+  end
+  
+  def black_player=(player_in)
+    set_player!(BLACK, player_in)
+  end
+  
+  def set_player!(color, player)
     deobserve_players
-    @inner_players[1] = players_in[0]
-    @inner_players[2] = players_in[1]
+    @inner_players[color] = player
     set_players_to_game_board
     observe_players
-    players
+    @inner_players[color]
   end
 
   def new_game
@@ -66,6 +81,16 @@ class Manager < Qt::Object
     @historian.save!(filename)
     @actual_game_filename = filename
   end
+  
+  def change_player(color, difficulty)
+    if difficulty == 0 then
+      player = GuiPlayer.new(color, @game_board)
+    else
+      player = MinimaxPlayer.new(color, difficulty)
+    end
+    set_player!(color, player)
+    player
+  end
 
 private
   def set_players_to_game_board
@@ -81,7 +106,7 @@ private
   
   def deobserve_players
     players.each do |player|
-      delete_observer(player)
+      player.delete_observer(self)
     end
   end
 

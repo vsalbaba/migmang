@@ -12,6 +12,7 @@ Qt::Object.connect(window, SIGNAL('undo()'), manager, SLOT('undo()'))
 Qt::Object.connect(window, SIGNAL('redo()'), manager, SLOT('redo()'))
 Qt::Object.connect(window, SIGNAL('save_game(const QString&)'), manager, SLOT('save_game(const QString&)'))
 Qt::Object.connect(window, SIGNAL('load_game(const QString&)'), manager, SLOT('load_game(const QString&)'))
+Qt::Object.connect(window, SIGNAL('change_player(int, int)'), manager, SLOT('change_player(int, int)'))
 window.show
 
 app.exec

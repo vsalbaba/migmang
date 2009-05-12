@@ -2,9 +2,9 @@ class MinimaxPlayer < AbstractPlayer
   attr_reader :games, :depth
   include MoveEnhancements
 
-  def initialize(color)
+  def initialize(color, depth = 1)
     super(color)
-    @depth = 1
+    @depth = depth
   end
   
   def pick_move(game,moves)
