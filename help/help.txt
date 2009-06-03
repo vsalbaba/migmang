@@ -1,0 +1,82 @@
+h1. Nápovìda ke høe MigMang
+
+h2. Obsah
+
+# Pravidla
+# Ovládání
+## Ovládání hrací desky
+## Menu File
+## Menu Edit
+## Menu Players
+## Menu Help
+
+h2. Pravidla
+
+h4. Cíl hry
+
+Zajmout všechny soupeøovy kameny.
+
+h4. Výchozí situace
+
+ZDE CHYBI OBRAZEK
+
+Základní postavení je na obrázku nahoøe. Hru zahajuje èervený.
+
+h4. Hra
+
+Hráè na tahu posune kamenem po èáøe o jedno pole libovolným smìrem.
+Diagonální pohyb není povolen.
+Kámen, který je obklopen jinými kameny tak, že se nemùže hnout žádným smìrem, je zajat a odstranìn z desky.
+Obklíèení našeho kamene musí dokonèit kámen soupeøùv.
+Jestliže bìhem pøesunu svých kamenù zatarasíme nìkterému z nich poslední cestu, tento kámen není soupeøem zajat.
+Zbývá-li hráèi jen jediný kámen, zajímá soupeøovy kameny pøeskokem. Pøeskok mùže být proveden z jednoho bodu, pøes kámen na sousedním bodu, na následující bod. Ten musí být volný a všechny tøi body musí ležet na jedné linii.
+Pøeskok soupeøova kamene není povinný.
+
+h4. Konec hry
+
+Zvítìzí hráè, který zajme všechny soupeøovy kameny.
+Hráèi se dohodnou na remíze v pøípadì, že žádný z hráèù nemá dostatek kamenù k tomu, aby zvitezil.
+
+
+h2. Ovládání
+
+h3. Ovládání hrací desky
+
+h4. Tah
+
+Dvojklikem vyberte kámen, se kterým chcete táhnout. Zobrazí se grafická nápovìda kam mùžete kamenem táhnout. Dvojklikem vyberte pozici na kterou chcete táhnout.
+Pokud si pøejete táhnout jiným kamenem, dvojklikem mimo pozice na která mùžete nyní vybraným kamenem táhnout výber zrušíte.
+
+h3. Menu File
+
+Menu File slouží k zapoèetí a ukonèení her.
+V menu File najdete následující akce:
+
+- New := Okamžitì zapoène novou hru
+- Save := Zobrazí dialog pro uložení rozehrané hry do souboru
+- Load := Zobrazí dialog pro naètení hry ze souboru
+- Quit := Ukonèí program
+
+h3. Menu Edit
+
+Menu Edit slouží k úpravì právì aktivní hry.
+V menu Edit najdete následující akce:
+
+- Undo := Vrátí jeden odehraný tah zpìt
+- Redo := Odehraje znovu tah vrácený pomocí Undo
+- Start Replay := Zaène pøehrávat prùbìh partie od zaèátku
+- Stop Replay := Zastaví pøehrávání hry spuštìné pomocí Start Replay. Ve høe je možno pokraèovat od tahu, na kterém bylo pøehrávání zastaveno
+- Advice := Nápovìda nejlepšího tahu
+
+h3. Menu Players
+
+Menu Players slouží k volbì hráèù, v pøípadì poèítaèových hráèù i k volbì jejich obtížnosti.
+V menu Players najdete stejné volby pro èerveného i èerného hráèe:
+
+- Human := Nastaví hráèe jako èlovìka hrajícího z uživatelského rozhraní.
+- Computer - easy := Nastaví hráèe jako poèítaè s nízkou obtížností
+- Computer - hard := Nastaví hráèe jako poèítaè s vyšší obtížností
+
+h3. Menu Help
+
+Menu Help obsahuje akci Help, která vyvolá tuto nápovìdu.

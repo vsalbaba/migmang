@@ -1,6 +1,6 @@
 class Manager < Qt::Object
   attr_accessor :board, :historian, :game_board
-  slots 'new_game()', 'undo()', 'redo()', 'load_game(const QString&)', 'save_game(const QString&)', 'change_player(int, int)'
+  slots 'new_game()', 'undo()', 'redo()', 'load_game(const QString&)', 'save_game(const QString&)', 'change_player(int, int)', 'start_replay()', 'stop_replay()', 'next_replay_step()', 'show_best_move()'
   
   def initialize
     super
@@ -23,12 +23,10 @@ class Manager < Qt::Object
   def players=(players_in)
     self.white_player = players_in[0]
     self.black_player = players_in[1]
-    p players
     players
   end
   
   def white_player=(player_in)
-    p "youuuuu"
     set_player!(WHITE, player_in)
   end
   
@@ -61,23 +59,22 @@ class Manager < Qt::Object
   end
   
   def redo
-    begin
+    # begin
       @historian.redo!
-    rescue
-      puts "redo failed."
-    end
+    # rescue
+    #   puts "redo failed."
+    #   p $ERROR_INFO
+    # end
     @game_board.board = @board
     @game_board.update
   end
   
   def load_game(filename)
-    puts "yay, " + filename
     @historian.load!(filename)
     @actual_game_filename = filename
   end
   
   def save_game(filename)
-    puts "yay, " + filename
     @historian.save!(filename)
     @actual_game_filename = filename
   end
@@ -91,8 +88,49 @@ class Manager < Qt::Object
     set_player!(color, player)
     player
   end
+  
+  def start_replay
+    @replay_to = @historian.index
+    @historian.index = 0
+    @board = MigMangBoard.new.populate!
+    @historian.game = @board
+    @game_board.board = @board
+    @game_board.update
+    unless @replay_timer
+      @replay_timer = Qt::Timer.new
+      Qt::Object.connect(@replay_timer, SIGNAL('timeout()'), self, SLOT('next_replay_step()'))
+    end
+    @timer.start(1000)
+  end
+  
+  def next_replay_step
+    puts "next_replay, #{@historian.index}, #{@replay_to}"
+    if @historian.index < @replay_to
+      self.redo
+    else
+      stop_replay
+    end
+  end
+  
+  def stop_replay
+    puts "stop timer"
+    @replay_timer.stop
+  end
+  
+  def show_best_move
+    moves = @board.moves_for(@board.on_move)
+    best_move = moves[MinimaxPlayer.new(@board.on_move).pick_move(@board,moves)]
+    p best_move
+    best_move = best_move[0..1]
+    best_move.map! do |move|
+      @board.from_noted(move[1])
+    end
+    p best_move
+    @game_board.best_move_highlight = best_move
+  end
 
 private
+#gameboard je widget
   def set_players_to_game_board
     @game_board.white_gui = @inner_players[WHITE]
     @game_board.black_gui = @inner_players[BLACK]

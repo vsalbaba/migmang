@@ -4,7 +4,7 @@ module View
     include MigMangBoardHelper
     FILE_PATH = File.dirname(__FILE__)
     
-    attr_accessor :board, :white_gui, :black_gui
+    attr_accessor :board, :white_gui, :black_gui, :best_move_highlight
 
     def initialize(parent = nil)
       super
@@ -32,6 +32,7 @@ module View
         case @destination_highlight.include? [tile_x, tile_y]
         when true:
           move = select_move(to_noted(@origin_highlight), to_noted(tile_x, tile_y))
+      
           case @board.on_move
           when WHITE:
             white_gui.update(self, move) if white_gui
@@ -45,6 +46,12 @@ module View
         update
       end
     end
+    
+    def best_move_highlight=(move)
+      @best_move_highlight=move
+      update
+      @best_move_highlight
+    end
 
 private
     def load_graphic
@@ -52,17 +59,27 @@ private
       @theme.load_pieces(FILE_PATH + PIECES_PATH)
       @theme.load_highlights(FILE_PATH + HIGHLIGHT_PATH)
     end
-
+  
     def paint_board_at(tile_coord, actual_coord, painter)
       pixmap = select_board_picture_for(tile_coord)
       painter.drawPixmap(actual_coord.first, actual_coord.last, pixmap)
     end
-
+  
     def paint_game_things_at(tile_coord, actual_coord, painter)
       paint_board_at(tile_coord, actual_coord, painter)
       paint_pieces_at(tile_coord, actual_coord, painter)
       paint_destination_highlight_at(tile_coord, actual_coord, painter)
       paint_remove_highlight_at(tile_coord, actual_coord, painter)
+      paint_best_move_highlight_at(tile_coord, actual_coord, painter)
+    end
+    
+    def paint_best_move_highlight_at(tile_coord, actual_coord, painter)
+      # p @best_move_highlight
+      # p tile_coord
+      # p @theme.best_move_highlight
+      if @best_move_highlight.include?(tile_coord)
+        painter.drawPixmap(actual_coord.first, actual_coord.last, @theme.best_move_highlight)
+      end
     end
 
     def paint_remove_highlight_at(tile_coord, actual_coord, painter)
@@ -110,7 +127,7 @@ private
     end
 
     def dehighlight
-      @origin_highlight = @place_highlight = @remove_highlight = @destination_highlight = []
+      @origin_highlight = @place_highlight = @remove_highlight = @destination_highlight = @best_move_highlight = []
     end
 
     def select_move(from, to)

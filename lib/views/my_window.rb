@@ -1,16 +1,24 @@
 module View
   class MyWindow < Qt::MainWindow
-    signals 'new_game()', 'load_game(const QString&)', 'save_game(const QString&)', 'undo()', 'redo()', 'change_player(int, int)'
+    signals 'new_game()', 'load_game(const QString&)', 'save_game(const QString&)', 'undo()', 'redo()', 'change_player(int, int)', 'start_replay()', 'stop_replay()', 'show_best_move()'
     
-    slots 'save()', 'load()', 'white_computer_1()', 'white_human()', 'white_computer_2()', 'black_computer_1()', 'black_human()', 'black_computer_2()'
+    slots 'save()', 'load()', 'white_computer_1()', 'white_human()', 'white_computer_2()', 'black_computer_1()', 'black_human()', 'black_computer_2()', 'help()'
     attr_reader :game_board
     def initialize
       super
       @game_board = View::Board.new
       setCentralWidget(@game_board)
-
+      # puts Qt.methods.sort
+      # puts "                          "
+      # p Qt.included_modules
+      # raise "blah"
       create_actions
       create_menus
+    end
+    
+    def help
+      help_file_path = File.dirname(__FILE__) + "/../../help/help.html"
+      `start #{help_file_path}`
     end
 
     def save
@@ -67,7 +75,13 @@ private
 
       @redo_action = Qt::Action.new("Redo", self)
       Qt::Object.connect(@redo_action, SIGNAL('triggered()'), self, SIGNAL('redo()'))
-
+      
+      @start_replay_action = Qt::Action.new("Start Replay", self)
+      Qt::Object.connect(@start_replay_action, SIGNAL('triggered()'), self, SIGNAL('start_replay()'))
+      
+      @stop_replay_action = Qt::Action.new("Stop Replay", self)
+      Qt::Object.connect(@stop_replay_action, SIGNAL('triggered()'), self, SIGNAL('stop_replay()'))
+      
       @white_human_action = Qt::Action.new("Human", self)
       Qt::Object.connect(@white_human_action, SIGNAL('triggered()'), self, SLOT('white_human()'))
 
@@ -85,6 +99,12 @@ private
 
       @black_computer_2_action = Qt::Action.new("Computer - hard", self)
       Qt::Object.connect(@black_computer_2_action, SIGNAL('triggered()'), self, SLOT('black_computer_2()'))
+      
+      @best_move_action = Qt::Action.new("Advice", self)
+      Qt::Object.connect(@best_move_action, SIGNAL('triggered()'), self, SIGNAL('show_best_move()'))
+      
+      @help = Qt::Action.new("Help", self)
+      Qt::Object.connect(@help, SIGNAL('triggered()'), self, SLOT('help()'))
     end
 
     def create_menus
@@ -106,15 +126,19 @@ private
       @edit_menu = menuBar.addMenu("Edit")
         @edit_menu.addAction(@undo_action)
         @edit_menu.addAction(@redo_action)
+        @edit_menu.addAction(@start_replay_action)
+        @edit_menu.addAction(@stop_replay_action)
+        @edit_menu.addAction(@best_move_action)
     end
 
     def create_help_menu
       @helpMenu = menuBar.addMenu("Help")
+        @helpMenu.addAction(@help)
     end
 
     def create_players_menu
       @players_menu = menuBar.addMenu("Players")
-        @white_player_menu = @players_menu.addMenu("White")
+        @white_player_menu = @players_menu.addMenu("Red")
           @white_player_menu.addAction(@white_human_action)
           @white_player_menu.addAction(@white_computer_1_action)
           @white_player_menu.addAction(@white_computer_2_action)

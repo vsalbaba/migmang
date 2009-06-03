@@ -9,7 +9,7 @@ require "yaml"
 class Historian
   include MoveEnhancements
 	
-  attr_reader :history, :index
+  attr_accessor :index, :history, :game
 	
   def initialize(game)
 		@game = game
@@ -66,7 +66,10 @@ class Historian
 	end
 
 	def redo!
+	  p @history.length
+	  p @index
 		if @index.next == @history.length
+		  puts "blah"
 			raise "No moves to redo!"
 		end
 		@index += 1

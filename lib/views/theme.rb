@@ -6,7 +6,7 @@ module View
   attr_reader :left_bottom, :left_top, :right_bottom, :right_top,
               :left, :right, :top, :bottom, :center,
               :black_piece, :white_piece, :piece,
-              :highlight, :place_highlight, :remove_highlight
+              :highlight, :place_highlight, :remove_highlight, :best_move_highlight
 
 =begin rdoc
 Pokusi se nacist obrazek desky ze souboru. V souboru by melo byt 9 ctvercovych obrazku nad sebou
@@ -52,6 +52,7 @@ Pokusi se nacist obrazek desky ze souboru. V souboru by melo byt 9 ctvercovych o
       @highlight        = big.copy(0, 0 * small_size, small_size, small_size)
       @remove_highlight  = big.copy(0, 1 * small_size, small_size, small_size)
       @place_highlight = big.copy(0, 2 * small_size, small_size, small_size)
+      @best_move_highlight = @highlight
       true
     end
   end
