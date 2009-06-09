@@ -11,11 +11,12 @@ class MigMangBoard
   include Rules
   include MigMangBoardHelper
 
-  attr_accessor :board, :on_move
+  attr_accessor :board, :on_move, :free_neighbours_count
 
   def initialize
     @board = Board.new(9,9)
     @on_move = WHITE
+    @free_neighbours_count = {}
   end
 
 =begin rdoc
@@ -53,12 +54,18 @@ selector policka na desce. Je mozne selektovat napr. 0,0 (jako v poli poli) nebo
   def []=(key1, key2_or_value, value = nil)
     if key1.kind_of?(String)
       normal = from_noted key1
-      @board[normal.first, normal.last] = key2_or_value
+      x = normal.first
+      y = normal.last
+      stone_value = key2_or_value
     elsif [key1, key2_or_value].all? {|key| key.kind_of?(Integer) }
-      @board[key1, key2_or_value] = value
+      x = key1
+      y = key2_or_value
+      stone_value = value
     end
+    @board[x,y] = stone_value
+    @free_neighbours_count[ [x,y] ] = empty_neighbours_for(x,y).count
   end
-
+  
 =begin rdoc
 aplikuje konstruktivne tah na desku
  vraci novou desku.
@@ -68,6 +75,7 @@ Destruktivni verzi je +apply_move!+
     copy = MigMangBoard.new
     copy.on_move = @on_move
     copy.board = @board.dup
+    copy.free_neighbours_count = @free_neighbours_count
     copy.apply_move!(move)
   end
 

@@ -35,9 +35,9 @@ module View
       
           case @board.on_move
           when WHITE:
-            white_gui.update(self, move) if white_gui
+            white_gui.update(self, move) if white_gui && white_gui.respond_to?(:update)
           when BLACK:
-            black_gui.update(self, move) if black_gui
+            black_gui.update(self, move) if black_gui && black_gui.respond_to?(:update)
           end
           dehighlight
         when false:

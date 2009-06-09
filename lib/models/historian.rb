@@ -20,7 +20,7 @@ class Historian
 
 	def update(who, move)
 	  if @game == who
-	    puts "@game == who"
+      puts "move saved to history"
   		unless (@index == (@history.length - 1))
   			@history = @history[0..@index]
   		end

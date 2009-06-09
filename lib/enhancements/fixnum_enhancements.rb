@@ -22,4 +22,10 @@ class Fixnum
 		return false if what.empty? or empty?
 		!friendly_to?(what)
 	end
+	
+	def enemy
+	  return WHITE if black?
+	  return BLACK if white?
+	  return self
+  end
 end

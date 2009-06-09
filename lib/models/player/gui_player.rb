@@ -10,11 +10,9 @@ class GuiPlayer < AbstractPlayer
   end
 
   def pick_move(game, moves)
-    puts "GUI"
   end
 
   def update(who, move)
-    puts "hoj"
     if (who == @board) and (who.board.on_move == @color)
       move_picked move
     end

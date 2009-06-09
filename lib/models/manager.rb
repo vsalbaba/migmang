@@ -1,6 +1,8 @@
 class Manager < Qt::Object
+  COMPUTATION_TIME_QUANTUM = 300
   attr_accessor :board, :historian, :game_board
-  slots 'new_game()', 'undo()', 'redo()', 'load_game(const QString&)', 'save_game(const QString&)', 'change_player(int, int)', 'start_replay()', 'stop_replay()', 'next_replay_step()', 'show_best_move()'
+  slots 'new_game()', 'undo()', 'redo()', 'load_game(const QString&)', 'save_game(const QString&)', 'change_player(int, int)', 'start_replay()', 'stop_replay()', 'next_replay_step()', 'show_best_move()', 'compute_part()'
+  signals 'lock_board(bool)'
   
   def initialize
     super
@@ -9,11 +11,45 @@ class Manager < Qt::Object
     #pole nema 0ty prvek, protoze WHITE je 1 = eliminuje se prepocitavani indexu do pole
   end
   
-  def update(player, move)
-    if @board.on_move == @inner_players.index(player) then
-      @board.apply_move! @board.moves_for(@board.on_move)[move]
-      @inner_players[@board.on_move].pick_move(@board,@board.moves_for(@board.on_move))
+  def compute_part
+    on_move = @board.on_move
+    if @inner_players[on_move].class != GuiPlayer
+      @inner_players[on_move].compute_part
     end
+  end
+  
+  def update(player, move)
+    @game_board.update
+    reset_computation_timer
+    on_move = @board.on_move
+        
+    if on_move == @inner_players.index(player) then
+      @board.apply_move! @board.moves_for(on_move)[move]
+
+      on_move = @board.on_move
+      @inner_players[on_move].pick_move(@board,@board.moves_for(on_move))
+
+      start_computations_if_necessary
+
+    end
+  end
+  
+  def start_computations_if_necessary
+    run = computer_player?
+    emit lock_board(run)
+    if run
+      @computation_timer.start(COMPUTATION_TIME_QUANTUM)
+    end
+  end
+  
+  def computer_player?
+    @inner_players[@board.on_move].class != GuiPlayer
+  end
+  
+  def reset_computation_timer
+    @computation_timer ||= Qt::Timer.new(self)
+    Qt::Object.connect(@computation_timer, SIGNAL('timeout()' ), self, SLOT('compute_part()'))
+    @computation_timer.stop
   end
   
   def players
@@ -35,13 +71,25 @@ class Manager < Qt::Object
   end
   
   def set_player!(color, player)
+    puts "settin_player"
     deobserve_players
     @inner_players[color] = player
     set_players_to_game_board
     observe_players
+    if color == @board.on_move
+      inform_player(player)
+    end
     @inner_players[color]
   end
-
+  
+  def inform_player(player)
+    puts "informing player"
+    reset_computation_timer
+    on_move = @board.on_move
+    @inner_players[on_move].pick_move(@board,@board.moves_for(on_move))
+    start_computations_if_necessary
+  end
+  
   def new_game
     initialize_board
     @game_board.board = @board
@@ -56,6 +104,7 @@ class Manager < Qt::Object
     end
     @game_board.board = @board
     @game_board.update
+    inform_player(@board.on_move)
   end
   
   def redo
@@ -83,7 +132,7 @@ class Manager < Qt::Object
     if difficulty == 0 then
       player = GuiPlayer.new(color, @game_board)
     else
-      player = MinimaxPlayer.new(color, difficulty)
+      player = MinimaxPlayer.new(color, difficulty - 1)
     end
     set_player!(color, player)
     player
@@ -91,7 +140,7 @@ class Manager < Qt::Object
   
   def start_replay
     @replay_to = @historian.index
-    @historian.index = 0
+    @historian.index = -1
     @board = MigMangBoard.new.populate!
     @historian.game = @board
     @game_board.board = @board
@@ -100,7 +149,7 @@ class Manager < Qt::Object
       @replay_timer = Qt::Timer.new
       Qt::Object.connect(@replay_timer, SIGNAL('timeout()'), self, SLOT('next_replay_step()'))
     end
-    @timer.start(1000)
+    @replay_timer.start(1000)
   end
   
   def next_replay_step
