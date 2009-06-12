@@ -137,6 +137,7 @@ private
     def highlight_moves_from(tile_x, tile_y)
       dehighlight
       @moves = @board.moves_for(@board.on_move)
+      p @moves
       moves_begining_at([tile_x,tile_y], @moves).each do |move|
         highlight_move(move)
       end

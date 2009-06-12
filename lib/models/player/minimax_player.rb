@@ -15,7 +15,9 @@ class MinimaxPlayer < AbstractPlayer
     if @computation_step == @computations.size
       computation_completed
     else
-      value = demand(@computations[@computation_step])
+      RubyProf.resume
+        value = demand(@computations[@computation_step])
+      RubyProf.pause
       result = [value, @computation_step]
       @results[@computation_step] = result
       @computation_step += 1
@@ -24,17 +26,23 @@ class MinimaxPlayer < AbstractPlayer
   end
   
   def computation_completed
-    p @results.map(&:first)
     maximal_value = @results.max{|a,b| a.first <=> b.first }.first
     array_of_results = @results.find_all{|a| a.first == maximal_value}
     result = array_of_results[rand(array_of_results.size)].last
     puts @games_evaluated
     @games_evaluated = 0
+    profile = RubyProf.stop
+    printer = RubyProf::GraphHtmlPrinter.new(profile)
+    File.open("negas.html", "wb") do |file|
+      printer.print(file)
+    end
     changed
     notify_observers self, result
   end
   
   def pick_move(game,moves)
+    RubyProf.start
+    RubyProf.pause
     @computation_step = 0
     @games = moves.map do |move|
       game.apply_move(move)
@@ -43,10 +51,11 @@ class MinimaxPlayer < AbstractPlayer
     @games.size.times do |i|
       @computations[i] = promise do
         #minimax(games[i], 2)
-        #alfabeta @games[i], 2
-        negascout @games[i], 2
+        alfabeta @games[i], 1
+        #negascout @games[i], 2
       end
     end
+
     @results = []
   end
 
@@ -97,7 +106,7 @@ alphabeta(origin, depth, -infinity, +infinity)
     if depth <= 0 or node.ended?
       return self.send(@functions[@function], node)
     end
-    moves = node.moves_for(node.on_move)
+    moves = node.moves_for(node.on_move).sort_by(&:size).reverse
     for move in moves
       child = node.apply_move(move)
       alpha = [alpha, -alfabeta(child, depth-1, -beta, -alpha)].max
@@ -132,7 +141,8 @@ function negascout(node, depth, α, β)
     end
     b = beta
     moves = node.moves_for(node.on_move).sort_by(&:size).reverse
-    for move in moves
+    
+    moves.each do |move|
       child = node.apply_move(move)
       a = -negascout(child, depth-1, -b, -alpha)
       alpha = a if a > alpha

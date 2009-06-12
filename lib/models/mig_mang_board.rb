@@ -24,15 +24,15 @@ vlozi na  desku figury v zakladnim postaveni
 =end
   def populate!
     @board.clear!
-
-    %w(a1 a2 a3 a4 a5 a6 a7 a8 a9 b1 c1 d1 e1 f1 g1 h1).each do |man|
-      self[man] = WHITE
+    2.times do #dvakrat pro spravny update free_neighbours_count
+      %w(a1 a2 a3 a4 a5 a6 a7 a8 a9 b1 c1 d1 e1 f1 g1 h1).each do |man| #a1 a2 a3 a4 a5 a6 a7 a8 a9 b1 c1 d1 e1 f1 g1 h1
+        self[man] = WHITE
+      end
+  
+      %w(b9 c9 d9 e9 f9 g9 h9 i9 i8 i7 i6 i5 i4 i3 i2 i1).each do |man| #b9 c9 d9 e9 f9 g9 h9 i9 i8 i7 i6 i5 i4 i3 i2 i1
+        self[man] = BLACK
+      end
     end
-
-    %w(b9 c9 d9 e9 f9 g9 h9 i9 i8 i7 i6 i5 i4 i3 i2 i1).each do |man|
-      self[man] = BLACK
-    end
-
     @on_move = WHITE
     self
   end
@@ -63,7 +63,17 @@ selector policka na desce. Je mozne selektovat napr. 0,0 (jako v poli poli) nebo
       stone_value = value
     end
     @board[x,y] = stone_value
-    @free_neighbours_count[ [x,y] ] = empty_neighbours_for(x,y).count
+    position = [x,y]
+    up = position.up
+    down = position.down
+    left = position.left
+    right = position.right
+    
+    @free_neighbours_count[ position ] = empty_neighbours_for(x,y).count
+    @free_neighbours_count[ up ] = empty_neighbours_for(up[0], up[1]).count if up.on_board?(MIN_SIZE, MAX_SIZE)
+    @free_neighbours_count[ down ] = empty_neighbours_for(down[0], down[1]).count if down.on_board?(MIN_SIZE, MAX_SIZE)
+    @free_neighbours_count[ left ] = empty_neighbours_for(left[0], left[1]).count if left.on_board?(MIN_SIZE, MAX_SIZE)
+    @free_neighbours_count[ up ] = empty_neighbours_for(right[0], right[1]).count if right.on_board?(MIN_SIZE, MAX_SIZE)
   end
   
 =begin rdoc
@@ -109,7 +119,6 @@ Konstruktivni verzi je apply_move
   end
 
   def empty_neighbours_for(board_x,board_y)
-    [board_x,board_y].neighbours(MIN_SIZE, MAX_SIZE).delete_if{|position|
-      @board[position[0], position[1]].full?}
+    [board_x, board_y].neighbours(MIN_SIZE, MAX_SIZE).delete_if{|e| @board[e[0],e[1]].full?}
   end
 end

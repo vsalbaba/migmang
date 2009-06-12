@@ -10,12 +10,14 @@ class Array
 
   # vyhazi prvky ktere nemaji vsechny souradnice mezi min a max.
   def only_those_on_board(min,max)
-    self.delete_if do |position| 
-                     position.any? {|coord| !coord.between?(min,max) }
-                   end
-    self
+    self.reject do |position| 
+      not position.on_board?(min, max)
+    end
   end
   
+  def on_board?(min, max)
+    all?{|coord| coord.between?(min,max)}
+  end
   def neighbours(min, max)
     [ self.up, self.down, self.left, self.right ].only_those_on_board(min, max)
   end

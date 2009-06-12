@@ -1,5 +1,5 @@
 class Manager < Qt::Object
-  COMPUTATION_TIME_QUANTUM = 300
+  COMPUTATION_TIME_QUANTUM = 700
   attr_accessor :board, :historian, :game_board
   slots 'new_game()', 'undo()', 'redo()', 'load_game(const QString&)', 'save_game(const QString&)', 'change_player(int, int)', 'start_replay()', 'stop_replay()', 'next_replay_step()', 'show_best_move()', 'compute_part()'
   signals 'lock_board(bool)'

@@ -1,8 +1,5 @@
-require File.dirname(__FILE__) + '/../../lib/models/mig_mang_board'
-require File.dirname(__FILE__) + '/../../lib/models/rules'
-require File.dirname(__FILE__) + '/../../lib/models/board'
+require File.dirname(__FILE__) + '/../../lib/require_farm'
 require File.dirname(__FILE__) + '/../spec_helper.rb'
-require File.dirname(__FILE__) + '/../../lib/constants'
 
 describe "Rules" do
   before(:each) do
@@ -33,27 +30,62 @@ describe "Rules" do
     end
 
     it "should generate captures" do
-      @board[0, 0] = WHITE
-      @board[0, 1] = WHITE
-      @board[2, 0] = BLACK
+      2.times do #musi se provest 2krat, kvuli zapsani spravnych zaznamu do free_neighbours_count
+        @board['a1'] = WHITE
+        @board['a2'] = WHITE
+        @board['c1'] = BLACK
+      end
+      
       @board.moves_for(BLACK).should include([[:remove, "c1", BLACK], [:place, "b1", BLACK], [:remove, "a1", WHITE]])
     end
 
     it "should not generate captues of friendlies" do
-      @board[0, 0] = WHITE
-      @board[0, 1] = WHITE
-      @board[2, 0] = WHITE
+      2.times do
+        @board[0, 0] = WHITE
+        @board[0, 1] = WHITE
+        @board[2, 0] = WHITE
+      end
+
       @board.moves_for(WHITE).should include([[:remove, "c1", WHITE], [:place, "b1", WHITE]])
       @board.moves_for(WHITE).should_not include([[:remove, "c1", WHITE], [:place, "b1", WHITE], [:remove, "a1", WHITE]])
     end
 
-    it "should generate jump captures if one player has only 1 figure"
+    it "should generate jump captures if one player has only 1 figure" do
+      2.times do
+        @board['c3'] = WHITE
+        @board['c4'] = BLACK
+        @board['g3'] = BLACK
+      end
+      
+      @board.moves_for(WHITE).should include([[:remove, 'c3', WHITE], [:place, 'c5', WHITE], [:remove, 'c4', BLACK]])
+    end
+    
+    it "should not bugcapture" do
+      2.times do
+        @board['h1'] = WHITE
+        @board['i2'] = BLACK
+        @board['i3'] = BLACK
+      end
+      
+      @board.moves_for(WHITE).should_not include([[:remove, "h1", WHITE], [:place, "i1", WHITE], [:remove, "i2", BLACK]])
+    end
+    
+    it "should not bug" do
+      2.times do
+        @board['h2'] = WHITE
+        @board['i2'] = BLACK
+      end
+      @board.moves_for(BLACK).should include([[:remove, "i2", BLACK], [:place, "g2", BLACK], [:remove, "h2", WHITE]])
+    end
   end
+  
   
   describe "#winner" do
     it "should return nil if there is not a clear winner" do
-      @board[0, 0] = WHITE
-      @board[8, 8] = BLACK
+      2.times do
+        @board[0, 0] = WHITE
+        @board[8, 8] = BLACK
+      end
       @board.winner.should be_nil
     end
     
